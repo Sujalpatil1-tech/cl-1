@@ -1,0 +1,490 @@
+Practical 7 Data Loading, Storage, and File Formats Analysis (CSV, Excel, JSON)
+
+
+CODE:
+
+
+
+# Step 1: Import Pandas
+import pandas as pd
+
+# Step 2: Create a sample dataset
+data = {
+    'Name': ['Amit', 'Rahul', 'Priya', 'Sneha'],
+    'Age': [21, 22, 20, 23],
+    'City': ['Nashik', 'Pune', 'Mumbai', 'Nashik'],
+    'Marks': [85, 90, 88, 92]
+}
+
+df = pd.DataFrame(data)
+
+print("Original Dataset:")
+print(df)
+
+# Step 3: Save data in CSV format
+df.to_csv('student.csv', index=False)
+
+# Step 4: Read CSV file
+csv_data = pd.read_csv('student.csv')
+
+print("\nData Loaded from CSV:")
+print(csv_data)
+
+# Step 5: Save data in Excel format
+df.to_excel('student.xlsx', index=False)
+
+# Step 6: Read Excel file
+excel_data = pd.read_excel('student.xlsx')
+
+print("\nData Loaded from Excel:")
+print(excel_data)
+
+# Step 7: Save data in JSON format
+df.to_json('student.json', orient='records', indent=4)
+
+# Step 8: Read JSON file
+json_data = pd.read_json('student.json')
+
+print("\nData Loaded from JSON:")
+print(json_data)
+
+# Step 9: Display dataset information
+print("\nDataset Information:")
+print(df.info())
+
+
+
+
+
+
+
+
+
+
+Thoery:
+
+
+
+## **1. Aim**
+
+To perform data loading, storage and analysis using different file formats such as CSV, Excel and JSON with the help of Python Pandas library.
+
+## **2. Theory**
+
+**Data Loading** is the process of importing data from different file formats into a program for analysis and processing.
+
+**Data Storage** refers to saving data in a particular file format so that it can be accessed, modified and reused whenever required.
+
+In Data Science, data is available in different formats. Python provides the Pandas library to read, process and store data in different file formats.
+
+This practical focuses on three commonly used file formats:
+
+### **A. CSV (Comma-Separated Values)**
+
+[Import CSV icon in Windows 11 Outline Style](https://images.openai.com/static-rsc-4/Gy6OmYGtCHDEkCxj5i3m8dxbC4DCzzqDzoEijS76zKDxH7Akow6p9SCBQTwF5g9HxXjTKBDXqZ9BKV6z1U_ixme25IMfsrvFy5Gfn6OZfmeAZ10-RS84d17Sl_u2NBCvYfD71g0bzmp1isQlcJz59151fxouFST4r0OFAJtZWJA?purpose=inline)
+
+**CSV** is a simple text-based file format used to store tabular data. Each row represents a record, and values are separated by commas.
+
+**Example:**
+
+```
+Name,Age,City
+Rahul,21,Nashik
+Amit,22,Pune
+Priya,20,Mumbai
+```
+
+**Features:**
+
+1. Stores data in rows and columns.
+2. Uses commas to separate values.
+3. Easy to create and read.
+4. Supported by many software applications.
+5. Does not directly support formatting, formulas or multiple sheets.
+
+**Pandas functions:**
+
+- `pd.read_csv()` – Reads CSV files.
+- `df.to_csv()` – Saves data into CSV files.
+
+### **B. Excel File**
+
+[Icona Di Excel PNG - trasparente Icona Di Excel Download gratuito - CleanPNG / KissPNG](https://images.openai.com/static-rsc-4/BB5dVMvrprwsbpzP9UXF8jalc7NookUz4ni0YJdrcXDV714Dl7fZR8hYBZAWEqySIwLc6HlPmpxiFjc4aMBbiLe-Rwm6hp6dXnj6dJeSLluvo2YrS9SRbjT4nhjtXBysK0HllRWhvQK9wQEgo58Z5gt3HUUfS2Y2gVnu7YTmjhU?purpose=inline)
+
+**Excel** is a spreadsheet file format used to store and organize data in rows and columns. It supports multiple worksheets, formulas, charts and formatting.
+
+**Features:**
+
+1. Stores data in rows and columns.
+2. Supports multiple worksheets.
+3. Supports formulas and calculations.
+4. Provides charts and formatting.
+5. Useful for business and statistical analysis.
+
+**Pandas functions:**
+
+- `pd.read_excel()` – Reads Excel files.
+- `df.to_excel()` – Saves data into Excel files.
+
+### **C. JSON (JavaScript Object Notation)**
+
+**JSON** is a lightweight data-interchange format used to store and exchange structured data. It represents information using key-value pairs and supports nested structures.
+
+**Example:**
+
+```
+[
+  {
+    "Name": "Rahul",
+    "Age": 21,
+    "City": "Nashik"
+  },
+  {
+    "Name": "Amit",
+    "Age": 22,
+    "City": "Pune"
+  }
+]
+```
+
+**Features:**
+
+1. Stores data in key-value pairs.
+2. Supports nested objects and arrays.
+3. Easy to read and understand.
+4. Commonly used in web APIs.
+5. Supports data exchange between different applications.
+
+**Pandas functions:**
+
+- `pd.read_json()` – Reads JSON files.
+- `df.to_json()` – Saves data into JSON files.
+
+## **3. Working / Steps**
+
+1. **Import Libraries:** Import Pandas and other required Python libraries.
+2. **Create Dataset:** Create or obtain a sample dataset containing information such as student names, ages and marks.
+3. **Store as CSV:** Save the dataset using `to_csv()`.
+4. **Load CSV:** Read the CSV file using `read_csv()`.
+5. **Store as Excel:** Save the dataset using `to_excel()`.
+6. **Load Excel:** Read the Excel file using `read_excel()`.
+7. **Store as JSON:** Convert the dataset into JSON format using `to_json()`.
+8. **Load JSON:** Read the JSON file using `read_json()`.
+9. **Display Data:** Display the loaded datasets using Pandas.
+10. **Analyze Data:** Check the shape, columns, data types and statistical information.
+11. **Compare Formats:** Compare CSV, Excel and JSON based on their structure and usage.
+12. **Verify Storage:** Confirm that the data is correctly saved and loaded.
+
+## **4. Important Concepts**
+
+| Concept      | Meaning                                |
+| ------------ | -------------------------------------- |
+| Data Loading | Importing data into a program          |
+| Data Storage | Saving data for future use             |
+| CSV          | Comma-separated tabular file format    |
+| Excel        | Spreadsheet file format                |
+| JSON         | Key-value-based data format            |
+| Pandas       | Python library for data manipulation   |
+| DataFrame    | Two-dimensional tabular data structure |
+| read_csv()   | Reads CSV files                        |
+| read_excel() | Reads Excel files                      |
+| read_json()  | Reads JSON files                       |
+| to_csv()     | Saves data as CSV                      |
+| to_excel()   | Saves data as Excel                    |
+| to_json()    | Saves data as JSON                     |
+
+### **Difference Between CSV, Excel and JSON**
+
+| Feature           | CSV                   | Excel                | JSON                       |
+| ----------------- | --------------------- | -------------------- | -------------------------- |
+| Structure         | Rows and columns      | Worksheets           | Key-value pairs            |
+| Extension         | `.csv`                | `.xlsx`              | `.json`                    |
+| Formatting        | No                    | Yes                  | No spreadsheet formatting  |
+| Multiple sheets   | No                    | Yes                  | Supports nested structures |
+| Human readability | High                  | High                 | High                       |
+| Common usage      | Tabular data exchange | Spreadsheet analysis | APIs and data exchange     |
+
+## **5. Advantages**
+
+1. Makes data loading and storage easy.
+2. Supports different file formats.
+3. Pandas provides simple functions for reading and writing files.
+4. Allows data to be reused for future analysis.
+5. CSV files are lightweight and easy to share.
+6. Excel supports calculations and multiple worksheets.
+7. JSON supports structured and nested data.
+
+## **6. Applications**
+
+1. Data analysis and processing.
+2. Business reporting.
+3. Student record management.
+4. Financial data storage.
+5. Web application development.
+6. Data exchange between applications.
+7. Machine learning dataset preparation.
+8. API data handling.
+
+## **7. Libraries Used**
+
+| Library  | Purpose                                 |
+| -------- | --------------------------------------- |
+| Pandas   | Reading, processing and storing data    |
+| NumPy    | Numerical operations                    |
+| Openpyxl | Reading and writing Excel `.xlsx` files |
+| JSON     | Working with JSON data                  |
+| Python   | Implementing data loading and storage   |
+
+## **8. Conclusion**
+
+In this practical, data loading and storage were performed using CSV, Excel and JSON file formats with the help of Python Pandas. Different functions were used to read and write data in these formats. The practical helped understand the structure, features and applications of different file formats used in Data Science.
+
+## **9. Viva Questions with Answers**
+
+**Q1. What is Data Loading?**
+
+Data Loading is the process of importing data from files or other sources into a program for analysis.
+
+**Q2. What is Data Storage?**
+
+Data Storage is the process of saving data in a file or database for future use.
+
+**Q3. What is CSV?**
+
+CSV stands for Comma-Separated Values. It is a text file format used to store tabular data.
+
+**Q4. What is the extension of a CSV file?**
+
+`.csv`
+
+**Q5. What is an Excel file?**
+
+An Excel file is a spreadsheet format used to store data in rows, columns and multiple worksheets.
+
+**Q6. What is the extension of an Excel file?**
+
+`.xlsx` is a commonly used Excel file extension.
+
+**Q7. What is JSON?**
+
+JSON stands for JavaScript Object Notation. It is a lightweight format used to store and exchange structured data.
+
+**Q8. What is the extension of a JSON file?**
+
+`.json`
+
+**Q9. Which Python library is commonly used for data loading?**
+
+Pandas is commonly used for data loading and manipulation.
+
+**Q10. Which function is used to read a CSV file?**
+
+`pd.read_csv()`
+
+**Q11. Which function is used to read an Excel file?**
+
+`pd.read_excel()`
+
+**Q12. Which function is used to read a JSON file?**
+
+`pd.read_json()`
+
+**Q13. What is a DataFrame?**
+
+A DataFrame is a two-dimensional tabular data structure provided by Pandas, containing rows and columns.
+
+**Q14. What is the main difference between CSV and Excel?**
+
+CSV stores plain tabular data, whereas Excel supports multiple worksheets, formulas, charts and formatting.
+
+**Q15. Where is JSON commonly used?**
+
+JSON is commonly used in web APIs and for exchanging structured data between applications.
+
+### **Quick Hinglish Understanding**
+
+Imagine tumhare paas student data hai: Name, Age, Marks.
+
+- **CSV:** Data commas se separate hokar save hota hai.
+- **Excel:** Data spreadsheet mein save hota hai; multiple sheets aur formulas bhi ho sakte hain.
+- **JSON:** Data key-value pairs mein save hota hai, jaise `"Name": "Rahul"`.
+
+Pandas se teeno formats ko read aur write kar sakte hain.
+
+**Remember these six functions:**
+
+| Format | Read           | Write        |
+| ------ | -------------- | ------------ |
+| CSV    | `read_csv()`   | `to_csv()`   |
+| Excel  | `read_excel()` | `to_excel()` |
+| JSON   | `read_json()`  | `to_json()`  |
+
+**Most important viva:** CSV = Tabular text, Excel = Spreadsheet, JSON = Key-value data.
+
+
+
+
+code explaination:
+
+
+
+
+
+
+
+
+## **Step 1: Import Pandas**
+
+```
+import pandas as pd
+```
+
+- `pandas` is a Python library used for data manipulation and analysis.
+- `pd` is an alias (short name) used to access Pandas functions.
+
+## **Step 2: Create a sample dataset**
+
+```
+data = {    'Name': ['Amit', 'Rahul', 'Priya', 'Sneha'],    'Age': [21, 22, 20, 23],    'City': ['Nashik', 'Pune', 'Mumbai', 'Nashik'],    'Marks': [85, 90, 88, 92]}
+```
+
+- `data` is a Python dictionary that stores the student information.
+- Each dictionary key represents a column name.
+- Each list contains the values for that column.
+
+The dataset contains four columns:
+
+- `Name`: Student names.
+- `Age`: Student ages.
+- `City`: Student cities.
+- `Marks`: Student marks.
+
+```
+df = pd.DataFrame(data)
+```
+
+- `pd.DataFrame()` converts the dictionary into a Pandas DataFrame.
+- `df` stores the DataFrame.
+- A DataFrame is a two-dimensional tabular structure containing rows and columns.
+
+```
+print("Original Dataset:")print(df)
+```
+
+- Displays the original dataset.
+- The first statement prints the heading.
+- The second statement displays the DataFrame.
+
+## **Step 3: Save data in CSV format**
+
+```
+df.to_csv('student.csv', index=False)
+```
+
+- `to_csv()` saves the DataFrame into a CSV file.
+- `'student.csv'` is the output filename.
+- `index=False` prevents Pandas from saving row index numbers as an extra column.
+- The file is saved in the current working directory.
+
+## **Step 4: Read CSV file**
+
+```
+csv_data = pd.read_csv('student.csv')
+```
+
+- `pd.read_csv()` reads data from a CSV file.
+- `'student.csv'` specifies the file to read.
+- `csv_data` stores the loaded data as a DataFrame.
+
+```
+print("\nData Loaded from CSV:")print(csv_data)
+```
+
+- `\n` inserts a new line before the heading.
+- Displays the data loaded from the CSV file.
+
+## **Step 5: Save data in Excel format**
+
+```
+df.to_excel('student.xlsx', index=False)
+```
+
+- `to_excel()` saves the DataFrame into an Excel file.
+- `'student.xlsx'` is the output filename.
+- `index=False` prevents row index numbers from being added as a separate column.
+- The file is saved in Excel format.
+
+## **Step 6: Read Excel file**
+
+```
+excel_data = pd.read_excel('student.xlsx')
+```
+
+- `pd.read_excel()` reads data from an Excel file.
+- `'student.xlsx'` specifies the Excel file.
+- `excel_data` stores the loaded data as a DataFrame.
+
+```
+print("\nData Loaded from Excel:")print(excel_data)
+```
+
+- Displays the data loaded from the Excel file.
+- `\n` adds a blank line before the heading.
+
+## **Step 7: Save data in JSON format**
+
+```
+df.to_json('student.json', orient='records', indent=4)
+```
+
+- `to_json()` converts the DataFrame into JSON format and saves it in a file.
+- `'student.json'` is the output filename.
+- `orient='records'` stores each row as a separate JSON object.
+- `indent=4` adds four-space indentation to make the JSON file readable.
+
+**Example JSON structure:**
+
+```
+[
+    {
+        "Name": "Amit",
+        "Age": 21,
+        "City": "Nashik",
+        "Marks": 85
+    }
+]
+```
+
+## **Step 8: Read JSON file**
+
+```
+json_data = pd.read_json('student.json')
+```
+
+- `pd.read_json()` reads data from a JSON file.
+- `'student.json'` specifies the file to read.
+- `json_data` stores the loaded data as a DataFrame.
+
+```
+print("\nData Loaded from JSON:")print(json_data)
+```
+
+- Displays the data loaded from the JSON file.
+- `\n` adds a new line before the heading.
+
+## **Step 9: Display dataset information**
+
+```
+print("\nDataset Information:")print(df.info())
+```
+
+- `df.info()` displays a summary of the DataFrame.
+- It provides the following information:
+  - Number of rows and columns.
+  - Column names.
+  - Number of non-null values.
+  - Data types of each column.
+  - Memory usage.
+- `print()` displays the heading and calls `df.info()`.
+
+**Note:** `df.info()` already prints its information and returns `None`, so the final line may also display `None` after the dataset information. You can write `df.info()` directly to avoid that extra `None`.

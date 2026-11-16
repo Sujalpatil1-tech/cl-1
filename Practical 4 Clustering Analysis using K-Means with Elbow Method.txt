@@ -1,0 +1,584 @@
+Practical 4 Clustering Analysis using K-Means with Elbow Method
+
+CODE:
+
+
+# Step 1: Import required libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+# Step 2: Create sample dataset
+data = {
+    'Annual Income': [15, 16, 17, 18, 20, 50, 52, 55,
+                      58, 60, 85, 88, 90, 92, 95],
+    'Spending Score': [80, 85, 78, 82, 88, 40, 45, 42,
+                       38, 35, 20, 25, 18, 22, 15]
+}
+
+df = pd.DataFrame(data)
+
+# Step 3: Select features
+X = df[['Annual Income', 'Spending Score']]
+
+# Step 4: Standardize the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Step 5: Calculate WCSS using Elbow Method
+wcss = []
+
+for i in range(1, 6):
+    kmeans = KMeans(n_clusters=i, random_state=42, n_init=10)
+    kmeans.fit(X_scaled)
+    wcss.append(kmeans.inertia_)
+
+# Step 6: Plot Elbow graph
+plt.figure(figsize=(7, 5))
+plt.plot(range(1, 6), wcss, marker='o')
+
+plt.xlabel("Number of Clusters (K)")
+plt.ylabel("WCSS")
+plt.title("Elbow Method")
+plt.show()
+
+# Step 7: Apply K-Means clustering
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+df['Cluster'] = kmeans.fit_predict(X_scaled)
+
+# Step 8: Display clustered dataset
+print("\nClustered Dataset:")
+print(df)
+
+# Step 9: Visualize clusters
+plt.figure(figsize=(7, 5))
+
+plt.scatter(
+    X_scaled[:, 0],
+    X_scaled[:, 1],
+    c=df['Cluster'],
+    cmap='viridis'
+)
+
+plt.xlabel("Annual Income (Standardized)")
+plt.ylabel("Spending Score (Standardized)")
+plt.title("K-Means Clustering")
+plt.show()
+
+
+
+
+
+
+
+
+# **Practical 4: Clustering Analysis Using K-Means with Elbow Method**
+
+## **1. Aim**
+
+To perform clustering analysis on a given dataset using the K-Means clustering algorithm and determine the optimal number of clusters using the Elbow Method.
+
+## **2. Theory**
+
+**Clustering** is an unsupervised machine learning technique used to group similar data points into clusters based on their characteristics or similarities.
+
+In clustering, the dataset does not contain predefined class labels. The algorithm automatically identifies patterns and groups similar observations together.
+
+**K-Means Clustering** is an unsupervised machine learning algorithm that divides a dataset into K clusters. Each cluster is represented by a center point called a centroid.
+
+The main objective of K-Means is to group similar data points together while minimizing the distance between data points and their respective cluster centroids.
+
+### **Working of K-Means Algorithm**
+
+[Unsupervised Clustering in Python with Scikit-learn](https://images.openai.com/static-rsc-4/aqciG_ldS7Whfzy4MB2N8f6hKteIM2kHTB52QUobQ7Pan0R-ZjlKyBQnkouKss4vGBNtyPOvN8Bic6wZJWwbGsWaIJQeTisZfhkjbmRzu9ZTGWV1J4M1jYC8v0vOZJKJU2Nc4S1dlOmYrerGQ_kdwFdJx-twlSDpIScChFnBgNk?purpose=inline)
+
+[programming-partner.com](https://www.programming-partner.com/blog/unsupervised-learning-clustering-python-scikit-learn?utm_source=chatgpt.com)
+
+1. **Choose K:** Select the required number of clusters.
+2. **Initialize Centroids:** Randomly select K initial centroid positions.
+3. **Assign Data Points:** Assign each data point to its nearest centroid using distance calculation.
+4. **Update Centroids:** Calculate the mean of all data points in each cluster to obtain new centroid positions.
+5. **Repeat:** Repeat the assignment and centroid update steps until the centroids stop changing significantly or the algorithm reaches its stopping condition.
+6. **Final Clusters:** Obtain the final groups of similar data points.
+
+### **K-Means Objective Function**
+
+K-Means tries to minimize the Within-Cluster Sum of Squares (WCSS).
+
+\\[ WCSS=\sum\_{j=1}^{K}\sum\_{x_i\in C_j} \\|x_i-\mu_j\\|^2 \\]
+
+Where:
+
+- K = Number of clusters
+- \\(C_j\\) = Cluster j
+- \\(x_i\\) = Data point
+- \\(\mu_j\\) = Centroid of cluster j
+
+Lower WCSS indicates that data points are closer to their respective centroids.
+
+### **Elbow Method**
+
+The **Elbow Method** is used to find the optimal number of clusters (K) in K-Means clustering.
+
+It calculates WCSS for different values of K and plots a graph between the number of clusters and WCSS.
+
+[Weather Typing and Synoptic Climatology – CEVE 543 - Fall 2025](https://images.openai.com/static-rsc-4/97VOIqvuPECxNORhms5bM4QV9NeaktnYZiycPNHBH6PL3_5v4Rle-GnvA58isbQCcofvhYG6LRnKdRAdRsDZueoJSbxbYSHVQOwI3TN2ofRMf40prS4MaJ65Cj-wrLvIKWJziThEcvH8Qpo9hdmHwZTsf-5P4q-3GlYHGYEN-tI?purpose=inline)
+
+[ceve543.github.io](https://ceve543.github.io/lectures/2025-10-27/index.html?utm_source=chatgpt.com)
+
+**Working of Elbow Method:**
+
+1. Apply K-Means with different values of K, such as 1 to 10.
+2. Calculate WCSS for each value of K.
+3. Plot K on the X-axis and WCSS on the Y-axis.
+4. Observe the graph.
+5. Select the point where the decrease in WCSS starts becoming slower. This point is called the elbow point.
+
+**Example:** If the graph shows a clear elbow at K = 3, then three clusters may be selected as the optimal number.
+
+The Elbow Method provides a useful estimate; sometimes the graph does not have a clear elbow.
+
+## **3. Working / Steps**
+
+1. **Import Libraries:** Import Pandas, NumPy, Matplotlib and Scikit-learn libraries.
+2. **Load Dataset:** Load the given dataset using Pandas.
+3. **Explore Dataset:** Check rows, columns, data types and statistical information.
+4. **Data Preprocessing:** Handle missing values and remove unnecessary columns if required.
+5. **Feature Selection:** Select the numerical features required for clustering.
+6. **Feature Scaling:** Apply StandardScaler or MinMaxScaler to bring features to a comparable scale.
+7. **Calculate WCSS:** Apply K-Means for different K values and calculate WCSS using `inertia_`.
+8. **Plot Elbow Graph:** Plot the number of clusters against WCSS.
+9. **Select Optimal K:** Identify the elbow point from the graph.
+10. **Apply K-Means:** Train the final K-Means model using the selected K value.
+11. **Assign Clusters:** Assign each data point to its corresponding cluster.
+12. **Visualize Results:** Display the clusters and their centroids using a scatter plot.
+
+## **4. Important Concepts**
+
+| Concept               | Meaning                                                       |
+| --------------------- | ------------------------------------------------------------- |
+| Clustering            | Grouping similar data points                                  |
+| Unsupervised Learning | Learning without predefined class labels                      |
+| K-Means               | Algorithm that divides data into K clusters                   |
+| K                     | Number of clusters                                            |
+| Centroid              | Center point of a cluster                                     |
+| WCSS                  | Sum of squared distances within clusters                      |
+| Elbow Method          | Technique to estimate the optimal K                           |
+| Distance              | Measurement of similarity or closeness                        |
+| Feature Scaling       | Bringing numerical features to a comparable scale             |
+| Inertia               | Sum of squared distances of samples to their nearest centroid |
+
+### **Important Difference: Classification vs Clustering**
+
+| Classification              | Clustering                     |
+| --------------------------- | ------------------------------ |
+| Supervised learning         | Unsupervised learning          |
+| Uses labelled data          | Uses unlabelled data           |
+| Predicts predefined classes | Discovers groups automatically |
+| Example: Spam detection     | Example: Customer segmentation |
+
+## **5. Advantages**
+
+1. Simple and easy to implement.
+2. Efficient for large numerical datasets.
+3. Groups similar data points automatically.
+4. Easy to understand and visualize.
+5. Elbow Method helps estimate the optimal number of clusters.
+6. Useful for discovering hidden patterns in data.
+
+## **6. Applications**
+
+1. Customer segmentation in marketing.
+2. Grouping customers based on purchasing behavior.
+3. Image segmentation.
+4. Document clustering.
+5. Market research.
+6. Grouping similar products.
+7. Analyzing geographical data.
+
+## **7. Libraries Used**
+
+| Library        | Purpose                            |
+| -------------- | ---------------------------------- |
+| Pandas         | Loading and handling datasets      |
+| NumPy          | Numerical calculations             |
+| Matplotlib     | Creating graphs and visualizations |
+| Seaborn        | Statistical visualization          |
+| Scikit-learn   | Machine learning implementation    |
+| KMeans         | Implementing K-Means clustering    |
+| StandardScaler | Feature scaling                    |
+| MinMaxScaler   | Normalizing numerical features     |
+
+## **8. Conclusion**
+
+In this practical, clustering analysis was performed using the K-Means algorithm. The dataset was preprocessed and numerical features were selected and scaled. The Elbow Method was used to estimate the optimal number of clusters by analyzing WCSS values. Finally, K-Means grouped similar data points into clusters, and the results were visualized using a scatter plot.
+
+## **9. Viva Questions with Answers**
+
+**Q1. What is Clustering?**
+
+Clustering is an unsupervised machine learning technique used to group similar data points into clusters.
+
+**Q2. What is K-Means Clustering?**
+
+K-Means is an unsupervised algorithm that divides a dataset into K clusters based on similarity.
+
+**Q3. Is K-Means supervised or unsupervised?**
+
+K-Means is an unsupervised machine learning algorithm.
+
+**Q4. What does K represent in K-Means?**
+
+K represents the number of clusters to be created.
+
+**Q5. What is a Centroid?**
+
+A centroid is the center point of a cluster, calculated as the mean of the data points belonging to that cluster.
+
+**Q6. What is the main objective of K-Means?**
+
+To minimize the within-cluster sum of squared distances between data points and their respective centroids.
+
+**Q7. What is WCSS?**
+
+Within-Cluster Sum of Squares measures the sum of squared distances between data points and their cluster centroids.
+
+**Q8. What is the Elbow Method?**
+
+It is a technique used to estimate the optimal number of clusters by plotting WCSS against different K values.
+
+**Q9. Why is it called the Elbow Method?**
+
+Because the graph often forms a bend resembling an elbow at the point where adding more clusters gives smaller improvements.
+
+**Q10. Why is feature scaling important in K-Means?**
+
+Because K-Means uses distance calculations, features with larger numerical ranges can dominate the clustering process.
+
+**Q11. Which distance metric is commonly used in K-Means?**
+
+Euclidean distance is commonly used.
+
+**Q12. What is the difference between K-Means and KNN?**
+
+K-Means is an unsupervised clustering algorithm, whereas KNN is a supervised algorithm used for classification and regression.
+
+**Q13. Can K-Means work without labelled data?**
+
+Yes. K-Means does not require predefined class labels.
+
+**Q14. What is inertia in K-Means?**
+
+Inertia is the sum of squared distances between each data point and its nearest cluster centroid. It is equivalent to WCSS.
+
+**Q15. What are the applications of K-Means?**
+
+Customer segmentation, image segmentation, document grouping, market research and pattern discovery.
+
+
+
+
+# **Practical 4: Customer Segmentation using K-Means Clustering**
+
+## **Step 1: Import required libraries**
+
+```
+import numpy as npimport pandas as pdimport matplotlib.pyplot as pltfrom sklearn.cluster import KMeansfrom sklearn.preprocessing import StandardScaler
+```
+
+**Line 1:**
+
+- `import numpy as np` – Imports the NumPy library.
+- `numpy` – Used for numerical and mathematical operations.
+- `np` – Short name (alias) for NumPy.
+
+**Line 2:**
+
+- `import pandas as pd` – Imports the Pandas library.
+- `pandas` – Used to create and manipulate datasets in tabular format.
+- `pd` – Short name (alias) for Pandas.
+
+**Line 3:**
+
+- `import matplotlib.pyplot as plt` – Imports the Pyplot module.
+- `plt` – Used to create graphs and visualizations.
+
+**Line 4:**
+
+- `from sklearn.cluster import KMeans` – Imports the K-Means clustering algorithm.
+- `KMeans` – Groups similar data points into clusters.
+
+**Line 5:**
+
+- `from sklearn.preprocessing import StandardScaler` – Imports StandardScaler.
+- `StandardScaler` – Standardizes the dataset so that features have a similar scale.
+
+## **Step 2: Create sample dataset**
+
+```
+data = {    'Annual Income': [15, 16, 17, 18, 20, 50, 52, 55,                      58, 60, 85, 88, 90, 92, 95],    'Spending Score': [80, 85, 78, 82, 88, 40, 45, 42,                       38, 35, 20, 25, 18, 22, 15]}df = pd.DataFrame(data)
+```
+
+**Line 1:**
+
+- `data` – Variable that stores the sample customer dataset.
+- `{}` – Creates a Python dictionary.
+- The dictionary contains two columns: Annual Income and Spending Score.
+
+**Line 2:**
+
+- `'Annual Income'` – Represents the annual income of customers.
+- The numerical values represent the income of different customers.
+
+**Line 3:**
+
+- `'Spending Score'` – Represents the spending score of customers.
+- It indicates the spending behavior of each customer.
+
+**Line 4:**
+
+- `df` – Variable that stores the dataset as a DataFrame.
+- `pd.DataFrame(data)` – Converts the dictionary into a tabular dataset using Pandas.
+
+**Important:** This sample dataset contains 15 customers and 2 features.
+
+## **Step 3: Select features**
+
+```
+X = df[['Annual Income', 'Spending Score']]
+```
+
+- `X` – Variable that stores the input features.
+- `df` – Refers to the DataFrame.
+- `[['Annual Income', 'Spending Score']]` – Selects both columns from the dataset.
+- These two features are used for customer segmentation.
+
+**Important:** K-Means uses these features to group customers based on similarity.
+
+## **Step 4: Standardize the data**
+
+```
+scaler = StandardScaler()X_scaled = scaler.fit_transform(X)
+```
+
+**Line 1:**
+
+- `scaler` – Variable that stores the StandardScaler object.
+- `StandardScaler()` – Creates an object for standardizing the data.
+
+**Line 2:**
+
+- `X_scaled` – Variable that stores the standardized dataset.
+- `fit_transform()` – Calculates the mean and standard deviation and transforms the data.
+- `X` – Original input features.
+
+Standardization brings both features to a comparable scale, preventing one feature from dominating the distance calculations.
+
+## **Step 5: Calculate WCSS using Elbow Method**
+
+```
+wcss = []for i in range(1, 6):    kmeans = KMeans(n_clusters=i, random_state=42, n_init=10)    kmeans.fit(X_scaled)    wcss.append(kmeans.inertia_)
+```
+
+**Line 1:**
+
+- `wcss` – Variable that stores the WCSS values.
+- – Creates an empty list.
+- WCSS stands for Within-Cluster Sum of Squares.
+
+**Line 2:**
+
+- `for` – Starts a loop.
+- `i` – Variable that stores the number of clusters.
+- `range(1, 6)` – Generates values from 1 to 5.
+- The loop runs five times to test different cluster numbers.
+
+**Line 3:**
+
+- `kmeans` – Variable that stores the K-Means model.
+- `KMeans()` – Creates a K-Means clustering model.
+- `n_clusters=i` – Specifies the number of clusters.
+- `random_state=42` – Ensures reproducible results.
+- `n_init=10` – Runs the algorithm with 10 different centroid initializations and keeps the best result.
+
+**Line 4:**
+
+- `kmeans.fit()` – Trains the K-Means model.
+- `X_scaled` – Standardized dataset given as input.
+- The algorithm forms clusters based on similarity.
+
+**Line 5:**
+
+- `wcss.append()` – Adds a value to the WCSS list.
+- `kmeans.inertia_` – Returns the WCSS value calculated by the K-Means model.
+- It measures the sum of squared distances between data points and their assigned cluster centers.
+
+**Important:** Lower WCSS indicates tighter clusters. The Elbow Method helps select a suitable number of clusters.
+
+## **Step 6: Plot Elbow graph**
+
+```
+plt.figure(figsize=(7, 5))plt.plot(range(1, 6), wcss, marker='o')plt.xlabel("Number of Clusters (K)")plt.ylabel("WCSS")plt.title("Elbow Method")plt.show()
+```
+
+**Line 1:**
+
+- `plt.figure()` – Creates a new figure for the graph.
+- `figsize=(7, 5)` – Sets the graph width to 7 inches and height to 5 inches.
+
+**Line 2:**
+
+- `plt.plot()` – Creates a line graph.
+- `range(1, 6)` – Represents the number of clusters from 1 to 5 on the X-axis.
+- `wcss` – Represents the calculated WCSS values on the Y-axis.
+- `marker='o'` – Displays circular markers at each data point.
+
+**Line 3:**
+
+- `plt.xlabel()` – Sets the X-axis label.
+- `"Number of Clusters (K)"` – Represents the number of clusters.
+
+**Line 4:**
+
+- `plt.ylabel()` – Sets the Y-axis label.
+- `"WCSS"` – Represents Within-Cluster Sum of Squares.
+
+**Line 5:**
+
+- `plt.title()` – Sets the graph title.
+- `"Elbow Method"` – Displays the title of the graph.
+
+**Line 6:**
+
+\- `plt.show()` – Displays the final Elbow graph.
+
+**Output explanation:**
+
+[Elbow Method and Silhouette Score Explained: Finding the Optimal Number of Clusters in K-Means](https://images.openai.com/static-rsc-4/riYA9HrL4TDBcxdNPeA3loahbwhO4gKadzuSVX8-QFUEG1YhQyX2NC4iILMF0wBPBC2BkUd8PNNSP25STpKWpx2kYizByN-IaRCNl9HCYliDYijesxLUQoYisNVCj_rONpu4c4FsdTJXRVgpEY6aYV_2raGBGEIP5jT7k_60HV4?purpose=inline)
+
+[aryanupadhyay.com](https://www.aryanupadhyay.com/post/elbow-method-and-silhouette-score-explained-finding-the-optimal-number-of-clusters-in-k-means?utm_source=chatgpt.com)
+
+- X-axis represents the number of clusters (K).
+- Y-axis represents WCSS.
+- WCSS decreases as the number of clusters increases.
+- The elbow point is where the decrease in WCSS starts becoming less significant.
+- This point helps select the suitable number of clusters.
+
+For this practical, the next step uses **K = 3**.
+
+## **Step 7: Apply K-Means clustering**
+
+```
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)df['Cluster'] = kmeans.fit_predict(X_scaled)
+```
+
+**Line 1:**
+
+- `kmeans` – Variable that stores the K-Means model.
+- `KMeans()` – Creates the clustering model.
+- `n_clusters=3` – Specifies that the dataset should be divided into three clusters.
+- `random_state=42` – Ensures reproducible results.
+- `n_init=10` – Runs 10 different centroid initializations and selects the best result.
+
+**Line 2:**
+
+- `df['Cluster']` – Creates a new column named Cluster in the DataFrame.
+- `kmeans.fit_predict()` – Trains the K-Means model and predicts the cluster label for every customer.
+- `X_scaled` – Standardized dataset given as input.
+
+Each customer is assigned a cluster label such as 0, 1 or 2.
+
+**Important concept:**
+
+K-Means works using centroids. A centroid is the center point of a cluster. The algorithm assigns data points to the nearest centroid and updates the centroids until the clusters stabilize.
+
+## **Step 8: Display clustered dataset**
+
+```
+print("\nClustered Dataset:")print(df)
+```
+
+**Line 1:**
+
+- `print()` – Displays the output.
+- `\n` – Adds a new line.
+- `"Clustered Dataset:"` – Displays the heading.
+
+**Line 2:**
+
+- `print(df)` – Displays the complete DataFrame.
+- It shows Annual Income, Spending Score and the newly assigned Cluster column.
+
+**Output:**
+
+The output contains 15 customer records with their assigned cluster labels (0, 1 or 2).
+
+The exact cluster labels can depend on centroid initialization and are identifiers, not rankings.
+
+## **Step 9: Visualize clusters**
+
+```
+plt.figure(figsize=(7, 5))plt.scatter(    X_scaled[:, 0],    X_scaled[:, 1],    c=df['Cluster'],    cmap='viridis')plt.xlabel("Annual Income (Standardized)")plt.ylabel("Spending Score (Standardized)")plt.title("K-Means Clustering")plt.show()
+```
+
+**Line 1:**
+
+- `plt.figure()` – Creates a new figure for visualization.
+- `figsize=(7, 5)` – Sets the graph width to 7 inches and height to 5 inches.
+
+**Line 2:**
+
+\- `plt.scatter()` – Creates a scatter plot to display the customer clusters.
+
+**Line 3:**
+
+\- `X_scaled[:, 0]` – Selects all rows of the first feature (Annual Income) for the X-axis.
+
+**Line 4:**
+
+\- `X_scaled[:, 1]` – Selects all rows of the second feature (Spending Score) for the Y-axis.
+
+**Line 5:**
+
+- `c=df['Cluster']` – Assigns different colors according to the cluster labels.
+- `df['Cluster']` – Contains the cluster number of each customer.
+
+**Line 6:**
+
+\- `cmap='viridis'` – Specifies the Viridis color scheme for the scatter plot.
+
+**Line 7:**
+
+- `plt.xlabel()` – Sets the X-axis label.
+- `"Annual Income (Standardized)"` – Represents standardized annual income.
+
+**Line 8:**
+
+- `plt.ylabel()` – Sets the Y-axis label.
+- `"Spending Score (Standardized)"` – Represents standardized spending score.
+
+**Line 9:**
+
+- `plt.title()` – Sets the graph title.
+- `"K-Means Clustering"` – Displays the visualization title.
+
+**Line 10:**
+
+\- `plt.show()` – Displays the final scatter plot.
+
+**Output explanation:**
+
+[Easy Tutorial: Using K-means Clustering to segment customers based on income & spending score | by Leah Ho | Medium](https://images.openai.com/static-rsc-4/wWCfEGwGBzehzjr8IAX_lwd_U3p-QKc2uoYQV4_SDa17bnDQ-cvb7Pn1w2ocXEcums4pE-Sur2DTB4KL7vFgTiV96qqGluM6aBHpzsHRlo1DPaHTG2GOm6IrbXVvZz8AZrWCa8fxDtb4wp8ReWhdUpe7QvL_Tx1j8WO6QJOBkyQ?purpose=inline)
+
+[medium.com](https://medium.com/%40leaahl/easy-tutorial-using-k-means-clustering-to-segment-customers-based-on-income-spending-score-f38e3297cb38?utm_source=chatgpt.com)
+
+- Each dot represents one customer.
+- X-axis represents standardized annual income.
+- Y-axis represents standardized spending score.
+- Different colors represent the three clusters.
+- Customers with similar income and spending behavior are grouped together.
+
+**Note:** The exact color assigned to each cluster may vary. Cluster 0, 1 and 2 are simply group identifiers.

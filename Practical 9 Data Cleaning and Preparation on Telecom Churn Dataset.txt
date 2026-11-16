@@ -1,0 +1,585 @@
+Practical 9 Data Cleaning and Preparation on Telecom Churn Dataset
+
+CODE:
+
+
+
+
+# Step 1: Import required libraries
+import pandas as pd
+import numpy as np
+
+# Step 2: Create a sample telecom dataset
+data = {
+    'CustomerID': [101, 102, 103, 104, 104, 105],
+    'Gender': ['Male', 'Female', 'Male', 'Female', 'Female', 'Male'],
+    'Tenure': [12, 24, np.nan, 36, 36, 18],
+    'MonthlyCharges': [50.5, 60.0, 70.5, np.nan, np.nan, 45.0],
+    'TotalCharges': ['606', '1440', ' ', ' ', ' ', '810'],
+    'Contract': ['Month-to-month', 'One year', 'Two year',
+                 'Month-to-month', 'Month-to-month', 'One year'],
+    'Churn': ['Yes', 'No', 'Yes', 'No', 'No', 'Yes']
+}
+
+df = pd.DataFrame(data)
+
+print("Original Dataset:")
+print(df)
+
+# Step 3: Check dataset information
+print("\nDataset Information:")
+print(df.info())
+
+# Step 4: Check missing values
+print("\nMissing Values:")
+print(df.isnull().sum())
+
+# Step 5: Replace blank spaces with NaN
+df['TotalCharges'] = df['TotalCharges'].replace(' ', np.nan)
+
+# Step 6: Convert TotalCharges into numeric format
+df['TotalCharges'] = pd.to_numeric(
+    df['TotalCharges'], errors='coerce'
+)
+
+# Step 7: Remove duplicate records
+df = df.drop_duplicates()
+
+# Step 8: Fill missing numerical values with median
+df['Tenure'] = df['Tenure'].fillna(df['Tenure'].median())
+df['MonthlyCharges'] = df['MonthlyCharges'].fillna(
+    df['MonthlyCharges'].median()
+)
+df['TotalCharges'] = df['TotalCharges'].fillna(
+    df['TotalCharges'].median()
+)
+
+# Step 9: Fill missing categorical values with mode
+df['Gender'] = df['Gender'].fillna(df['Gender'].mode()[0])
+
+# Step 10: Convert categorical columns into numerical values
+df['Gender'] = df['Gender'].map({'Male': 1, 'Female': 0})
+df['Churn'] = df['Churn'].map({'Yes': 1, 'No': 0})
+
+# Step 11: Display cleaned dataset
+print("\nCleaned Dataset:")
+print(df)
+
+# Step 12: Check missing values after cleaning
+print("\nMissing Values After Cleaning:")
+print(df.isnull().sum())
+
+# Step 13: Display final dataset information
+print("\nFinal Dataset Information:")
+print(df.info())
+
+
+
+
+
+
+
+
+## **1. Aim**
+
+To perform data cleaning and preparation on a Telecom Churn dataset by handling missing values, duplicate records, incorrect data types and preparing data for further analysis.
+
+## **2. Theory**
+
+**Data Cleaning** is the process of identifying and correcting errors, inconsistencies, missing values and duplicate records in a dataset to improve data quality.
+
+**Data Preparation** is the process of converting raw data into a suitable format for analysis and machine learning.
+
+In this practical, a Telecom Churn dataset is used to understand customer behavior and identify customers who have stopped using a telecom company's services.
+
+### **What is Telecom Churn?**
+
+Telecom Churn refers to the situation in which a customer stops using the services of a telecom company or switches to another service provider.
+
+**Example:**
+
+Suppose a telecom company has 1,000 customers. If 100 customers discontinue their services, those 100 customers are called churned customers.
+
+The churn rate is:
+
+\\[ Churn\ Rate=\frac{Number\ of\ Churned\ Customers}{Total\ Customers}\times100 \\]
+
+For this example:
+
+\\[ Churn\ Rate=\frac{100}{1000}\times100=10\\% \\]
+
+### **Common Problems in Raw Data**
+
+[Clean and preprocess your data into accurate, analysis-ready datasets | Osdire](https://images.openai.com/static-rsc-4/XhnI6dD59Ge97YTkiycKradYxrBKlg2SBtTUqaW1QuciuapjBxV0RrcbDC9nzPAE2Zw7d8uM046jPsP6BiczNv1u45OT0ceSUBn6R6bneY7TgRsLt50yVjo3Rb6RUC_AuMOBtjsAWCK9hsVdJzixllTxDGsrXbpNBs5IcYegbbM?purpose=inline)
+
+[osdire.com](https://osdire.com/farhan_khan_tp71/offer/i-will-clean-and-preprocess-your-data-into-accurate-analysis-ready-datasets?utm_source=chatgpt.com)
+
+Raw telecom datasets may contain the following problems:
+
+1. **Missing Values:** Some records may have empty or null values.
+2. **Duplicate Records:** The same customer information may appear multiple times.
+3. **Incorrect Data Types:** Numerical values may be stored as text.
+4. **Inconsistent Data:** Values may have different formats or spellings.
+5. **Outliers:** Extremely high or low values that differ from most observations.
+6. **Invalid Values:** Incorrect or impossible values in the dataset.
+
+### **Important Data Cleaning Techniques**
+
+**A. Handling Missing Values**
+
+Missing values occur when some information is not available in the dataset.
+
+Methods:
+
+- Remove rows containing missing values using `dropna()`.
+- Fill missing values using `fillna()`.
+- Replace missing numerical values with mean or median.
+- Replace missing categorical values with mode.
+
+**B. Removing Duplicate Records**
+
+Duplicate records are repeated entries in a dataset.
+
+Pandas functions:
+
+- `duplicated()` – Identifies duplicate records.
+- `drop_duplicates()` – Removes duplicate records.
+
+**C. Handling Incorrect Data Types**
+
+Sometimes numerical columns are stored as strings or objects.
+
+Example: Monthly charges stored as text instead of numerical values.
+
+Pandas function:
+
+- `astype()` – Converts data types.
+- `pd.to_numeric()` – Converts values into numeric format.
+
+**D. Handling Outliers**
+
+Outliers are observations that are significantly different from other values in the dataset.
+
+They can be detected using:
+
+- Box plots
+- Interquartile Range (IQR)
+- Statistical methods
+
+The IQR method uses:
+
+\\[ IQR=Q3-Q1 \\]
+
+Where:
+
+- Q1 = First quartile
+- Q3 = Third quartile
+
+Common lower and upper limits are:
+
+\\[ Lower=Q1-1.5(IQR) \\]
+
+\\[ Upper=Q3+1.5(IQR) \\]
+
+Outliers should be investigated before removing them because they may represent genuine customer behavior.
+
+**E. Encoding Categorical Data**
+
+Machine learning algorithms often require numerical input. Therefore, categorical values are converted into numerical representations.
+
+Example:
+
+| Gender | Encoded Value |
+| ------ | ------------- |
+| Male   | 0             |
+| Female | 1             |
+
+Common methods:
+
+- Label Encoding
+- One-Hot Encoding
+
+## **3. Working / Steps**
+
+1. **Import Libraries:** Import Pandas, NumPy, Matplotlib and Seaborn.
+2. **Load Dataset:** Load the Telecom Churn dataset using `pd.read_csv()`.
+3. **Explore Dataset:** Check the first few records using `head()` and dataset information using `info()`.
+4. **Check Missing Values:** Identify missing values using `isnull().sum()`.
+5. **Handle Missing Values:** Remove or replace missing values using `dropna()` or `fillna()`.
+6. **Check Duplicates:** Identify duplicate records using `duplicated()`.
+7. **Remove Duplicates:** Remove repeated records using `drop_duplicates()`.
+8. **Correct Data Types:** Convert columns into appropriate numerical or categorical data types.
+9. **Handle Outliers:** Detect and handle unusual values using statistical methods or box plots.
+10. **Encode Categorical Data:** Convert categorical columns into numerical format if required.
+11. **Verify Cleaned Data:** Check the dataset again for missing values, duplicates and incorrect data types.
+12. **Save Dataset:** Store the cleaned dataset using `to_csv()` for future analysis.
+
+## **4. Important Concepts**
+
+| Concept           | Meaning                                           |
+| ----------------- | ------------------------------------------------- |
+| Data Cleaning     | Removing errors and inconsistencies               |
+| Data Preparation  | Preparing raw data for analysis                   |
+| Telecom Churn     | Customers discontinuing telecom services          |
+| Missing Values    | Empty or unavailable data                         |
+| Duplicate Records | Repeated entries                                  |
+| Outliers          | Unusually high or low observations                |
+| Data Type         | Type of information stored in a column            |
+| Encoding          | Converting categorical values into numerical form |
+| Imputation        | Filling missing values                            |
+| Churn Rate        | Percentage of customers who leave                 |
+| Data Quality      | Accuracy, completeness and consistency of data    |
+
+### **Important Pandas Functions**
+
+| Function            | Purpose                             |
+| ------------------- | ----------------------------------- |
+| `pd.read_csv()`     | Loads dataset                       |
+| `head()`            | Displays first five rows by default |
+| `info()`            | Displays dataset information        |
+| `describe()`        | Provides statistical summary        |
+| `isnull().sum()`    | Counts missing values               |
+| `dropna()`          | Removes missing values              |
+| `fillna()`          | Fills missing values                |
+| `duplicated()`      | Identifies duplicate records        |
+| `drop_duplicates()` | Removes duplicate records           |
+| `astype()`          | Changes data type                   |
+| `value_counts()`    | Counts occurrences of values        |
+| `to_csv()`          | Saves cleaned dataset               |
+
+## **5. Advantages**
+
+1. Improves the quality and accuracy of data.
+2. Removes duplicate and inconsistent records.
+3. Handles missing values effectively.
+4. Makes data suitable for machine learning.
+5. Improves the reliability of data analysis.
+6. Helps identify customer churn patterns.
+7. Supports better business decision-making.
+
+## **6. Applications**
+
+1. Telecom customer churn prediction.
+2. Customer retention analysis.
+3. Banking customer analysis.
+4. Fraud detection.
+5. Healthcare data preparation.
+6. Sales and marketing analysis.
+7. Machine learning model preparation.
+
+## **7. Libraries Used**
+
+| Library      | Purpose                         |
+| ------------ | ------------------------------- |
+| Pandas       | Data loading and cleaning       |
+| NumPy        | Numerical operations            |
+| Matplotlib   | Data visualization              |
+| Seaborn      | Statistical visualization       |
+| Scikit-learn | Data preprocessing and encoding |
+
+## **8. Conclusion**
+
+In this practical, data cleaning and preparation were performed on a Telecom Churn dataset using Python. Missing values, duplicate records, incorrect data types and outliers were identified and handled using Pandas functions. Categorical data was encoded where required, and the cleaned dataset was prepared for further analysis and machine learning. This practical demonstrated the importance of data quality in Data Science.
+
+## **9. Viva Questions with Answers**
+
+**Q1. What is Data Cleaning?**
+
+Data Cleaning is the process of identifying and correcting errors, missing values, duplicates and inconsistencies in a dataset.
+
+**Q2. What is Data Preparation?**
+
+Data Preparation is the process of converting raw data into a suitable format for analysis and machine learning.
+
+**Q3. What is Telecom Churn?**
+
+Telecom Churn occurs when a customer stops using a telecom company's services or switches to another provider.
+
+**Q4. What is a Churn Rate?**
+
+Churn Rate is the percentage of customers who discontinue a service during a specific period.
+
+**Q5. What are Missing Values?**
+
+Missing values are empty or unavailable entries in a dataset.
+
+**Q6. Which function is used to check missing values in Pandas?**
+
+`isnull()` or `isna()` is used to identify missing values.
+
+**Q7. What is the difference between dropna() and fillna()?**
+
+`dropna()` removes missing values, whereas `fillna()` replaces missing values with specified values.
+
+**Q8. What are Duplicate Records?**
+
+Duplicate records are repeated entries containing the same or identical information.
+
+**Q9. Which function removes duplicate records?**
+
+`drop_duplicates()` removes duplicate records.
+
+**Q10. What are Outliers?**
+
+Outliers are data observations that differ significantly from most other observations.
+
+**Q11. What is IQR?**
+
+IQR stands for Interquartile Range. It is the difference between the third quartile and the first quartile.
+
+\\[ IQR=Q3-Q1 \\]
+
+**Q12. What is Encoding?**
+
+Encoding is the process of converting categorical data into numerical values.
+
+**Q13. What is Label Encoding?**
+
+Label Encoding converts different categories into numerical labels.
+
+**Q14. Which function is used to display dataset information?**
+
+`info()` displays column names, data types and non-null value counts.
+
+**Q15. Why is Data Cleaning important in Machine Learning?**
+
+It improves data quality and helps machine learning algorithms produce more reliable results.
+
+### **Quick Hinglish Understanding**
+
+Imagine ek telecom company ke paas 1,000 customers ka data hai.
+
+- Kuch customers ke mobile numbers missing hain.
+- Kuch customer records duplicate hain.
+- Monthly charges text format mein hain.
+- Kuch customers ne telecom service chhod di hai.
+
+Hum:
+
+1. Missing values handle karenge.
+2. Duplicate records remove karenge.
+3. Incorrect data types correct karenge.
+4. Outliers check karenge.
+5. Categorical data encode karenge.
+6. Clean dataset save karenge.
+
+
+
+
+
+code explaination:
+
+
+# **Practical 9: Data Cleaning and Preprocessing using Pandas**
+
+## **Step 1: Import required libraries**
+
+```
+import pandas as pdimport numpy as np
+```
+
+- `pandas`: Used for data manipulation, cleaning and analysis.
+- `numpy`: Used for numerical operations and handling missing values.
+- `pd` and `np` are aliases for Pandas and NumPy.
+
+## **Step 2: Create a sample telecom dataset**
+
+```
+data = {    'CustomerID': [101, 102, 103, 104, 104, 105],    'Gender': ['Male', 'Female', 'Male', 'Female', 'Female', 'Male'],    'Tenure': [12, 24, np.nan, 36, 36, 18],    'MonthlyCharges': [50.5, 60.0, 70.5, np.nan, np.nan, 45.0],    'TotalCharges': ['606', '1440', ' ', ' ', ' ', '810'],    'Contract': ['Month-to-month', 'One year', 'Two year',                 'Month-to-month', 'Month-to-month', 'One year'],    'Churn': ['Yes', 'No', 'Yes', 'No', 'No', 'Yes']}
+```
+
+- `data` is a Python dictionary containing telecom customer information.
+- `CustomerID`: Unique identification number of each customer.
+- `Gender`: Gender of the customer.
+- `Tenure`: Number of months the customer has used the service.
+- `MonthlyCharges`: Monthly amount paid by the customer.
+- `TotalCharges`: Total amount paid by the customer.
+- `Contract`: Type of contract selected by the customer.
+- `Churn`: Indicates whether the customer has left the service.
+- `np.nan` represents a missing numerical value.
+- `' '` represents a blank string, which is different from a missing value (`NaN`).
+
+```
+df = pd.DataFrame(data)print("Original Dataset:")print(df)
+```
+
+- `pd.DataFrame(data)` converts the dictionary into a DataFrame.
+- `df` stores the original dataset.
+- `print()` displays the dataset.
+
+## **Step 3: Check dataset information**
+
+```
+print("\nDataset Information:")print(df.info())
+```
+
+- `df.info()` displays the structure of the dataset.
+- It shows the number of rows and columns.
+- It displays column names, non-null values, data types and memory usage.
+- This helps identify missing values and incorrect data types.
+
+**Note:** `df.info()` already displays the information and returns `None`. Therefore, use `df.info()` directly instead of `print(df.info())` to avoid displaying `None`.
+
+## **Step 4: Check missing values**
+
+```
+print("\nMissing Values:")print(df.isnull().sum())
+```
+
+- `df.isnull()` checks every cell for missing values.
+- It returns `True` for missing values and `False` for available values.
+- `.sum()` counts the missing values in each column.
+- `print()` displays the missing-value count.
+
+## **Step 5: Replace blank spaces with NaN**
+
+```
+df['TotalCharges'] = df['TotalCharges'].replace(' ', np.nan)
+```
+
+- `df['TotalCharges']` selects the TotalCharges column.
+- `.replace()` replaces specified values with new values.
+- `' '` represents a blank string.
+- `np.nan` represents a missing value.
+- The cleaned column is assigned back to `df['TotalCharges']`.
+
+This step converts blank strings into proper missing values so Pandas can identify and handle them.
+
+## **Step 6: Convert TotalCharges into numeric format**
+
+```
+df['TotalCharges'] = pd.to_numeric(    df['TotalCharges'], errors='coerce')
+```
+
+- `pd.to_numeric()` converts the column into a numeric data type.
+- `df['TotalCharges']` is the column being converted.
+- `errors='coerce'` converts invalid values into `NaN` instead of generating an error.
+- The converted values are stored back in the same column.
+
+**Example:**
+
+- `'606'` becomes `606`.
+- `'1440'` becomes `1440`.
+- Blank or invalid values become `NaN`.
+
+## **Step 7: Remove duplicate records**
+
+```
+df = df.drop_duplicates()
+```
+
+- `drop_duplicates()` removes duplicate rows from the dataset.
+- It checks all columns by default.
+- `df =` stores the resulting dataset back in `df`.
+
+Here, the duplicate customer record with CustomerID `104` is removed because both rows contain identical values.
+
+## **Step 8: Fill missing numerical values with median**
+
+**Fill missing Tenure values**
+
+```
+df['Tenure'] = df['Tenure'].fillna(df['Tenure'].median())
+```
+
+- `df['Tenure']` selects the Tenure column.
+- `.median()` calculates the middle value of the column.
+- `.fillna()` replaces missing values with the calculated median.
+- The cleaned values are stored back in the Tenure column.
+
+**Fill missing MonthlyCharges values**
+
+```
+df['MonthlyCharges'] = df['MonthlyCharges'].fillna(    df['MonthlyCharges'].median())
+```
+
+- Selects the MonthlyCharges column.
+- Calculates its median using `.median()`.
+- Replaces missing values using `.fillna()`.
+
+**Fill missing TotalCharges values**
+
+```
+df['TotalCharges'] = df['TotalCharges'].fillna(    df['TotalCharges'].median())
+```
+
+- Selects the TotalCharges column.
+- Calculates the median of available numerical values.
+- Replaces missing values with that median.
+
+**Why median?**
+
+Median is less affected by extremely high or low values compared with the mean. It is commonly used to fill missing numerical values.
+
+## **Step 9: Fill missing categorical values with mode**
+
+```
+df['Gender'] = df['Gender'].fillna(df['Gender'].mode()[0])
+```
+
+- `df['Gender']` selects the Gender column.
+- `.mode()` calculates the most frequently occurring value.
+- `[0]` selects the first mode.
+- `.fillna()` replaces missing values with that most frequent value.
+- The cleaned values are stored back in the Gender column.
+
+**Important:** Mode is commonly used to fill missing categorical values.
+
+## **Step 10: Convert categorical columns into numerical values**
+
+**Convert Gender**
+
+```
+df['Gender'] = df['Gender'].map({'Male': 1, 'Female': 0})
+```
+
+- `.map()` replaces categorical values with numerical values.
+- `Male` is converted into `1`.
+- `Female` is converted into `0`.
+- This makes the Gender column numerical.
+
+**Convert Churn**
+
+```
+df['Churn'] = df['Churn'].map({'Yes': 1, 'No': 0})
+```
+
+- Converts the Churn column into numerical values.
+- `Yes` becomes `1`.
+- `No` becomes `0`.
+
+This process is called **Label Encoding**.
+
+## **Step 11: Display cleaned dataset**
+
+```
+print("\nCleaned Dataset:")print(df)
+```
+
+- Displays the heading.
+- Prints the final cleaned DataFrame.
+- Shows the dataset after removing duplicates, handling missing values and converting categorical columns.
+
+## **Step 12: Check missing values after cleaning**
+
+```
+print("\nMissing Values After Cleaning:")print(df.isnull().sum())
+```
+
+- `isnull()` checks for missing values.
+- `sum()` counts missing values in each column.
+- This verifies whether the cleaning process successfully handled the missing values.
+
+Expected result: All columns should show `0` missing values for this sample dataset.
+
+## **Step 13: Display final dataset information**
+
+```
+print("\nFinal Dataset Information:")print(df.info())
+```
+
+- Displays the final dataset heading.
+- `df.info()` shows the updated number of rows, columns, non-null values and data types.
+- It helps verify that the preprocessing operations were applied.
+
+**Exam note:** Write `df.info()` directly instead of `print(df.info())` to avoid the extra `None` in the output.

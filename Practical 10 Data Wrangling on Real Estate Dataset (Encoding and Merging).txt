@@ -1,0 +1,483 @@
+Practical 10 Data Wrangling on Real Estate Dataset (Encoding and Merging)
+
+CODE:
+
+
+
+
+# Step 1: Import required libraries
+import pandas as pd
+import numpy as np
+
+# Step 2: Create Property Dataset
+property_data = {
+    'Property_ID': [101, 102, 103, 104, 105],
+    'Owner_ID': [1, 2, 3, 1, 2],
+    'City': ['Nashik', 'Pune', 'Mumbai', 'Pune', 'Nashik'],
+    'Property_Type': ['Flat', 'House', 'Flat', 'Plot', 'House'],
+    'Price': [4500000, 6500000, 8000000, 3000000, 5500000]
+}
+
+property_df = pd.DataFrame(property_data)
+
+# Step 3: Create Owner Dataset
+owner_data = {
+    'Owner_ID': [1, 2, 3],
+    'Owner_Name': ['Amit', 'Rahul', 'Priya'],
+    'Contact': [9876543210, 9876543211, 9876543212]
+}
+
+owner_df = pd.DataFrame(owner_data)
+
+print("Property Dataset:")
+print(property_df)
+
+print("\nOwner Dataset:")
+print(owner_df)
+
+# Step 4: Merge both datasets
+merged_df = pd.merge(
+    property_df,
+    owner_df,
+    on='Owner_ID',
+    how='inner'
+)
+
+print("\nMerged Dataset:")
+print(merged_df)
+
+# Step 5: Apply One-Hot Encoding
+encoded_df = pd.get_dummies(
+    merged_df,
+    columns=['City', 'Property_Type'],
+    dtype=int
+)
+
+print("\nEncoded Dataset:")
+print(encoded_df)
+
+# Step 6: Display final dataset information
+print("\nFinal Dataset Information:")
+print(encoded_df.info())
+
+
+
+
+
+
+
+
+
+# **Practical 10: Data Wrangling on Real Estate Dataset (Encoding and Merging)**
+
+## **1. Aim**
+
+To perform data wrangling on a Real Estate dataset using encoding and merging techniques to convert raw data into a clean, structured, and analysis-ready format.
+
+## **2. Theory**
+
+### **A. Data Wrangling**
+
+Data Wrangling, also known as Data Munging, is the process of collecting, cleaning, transforming, and organizing raw data into a suitable format for analysis and machine learning.
+
+Real estate datasets contain information about properties, such as:
+
+- Property ID
+- Property location
+- Property type
+- Number of bedrooms
+- Area of property
+- Property price
+- Furnishing status
+- Number of bathrooms
+
+**Example:** A real estate company may maintain property details in one dataset and location details in another dataset. Data wrangling helps clean and combine these datasets for property price analysis.
+
+### **B. Encoding**
+
+Encoding is the process of converting categorical data into numerical form so that machine learning algorithms can process it.
+
+Categorical data contains text values such as Apartment, Villa, Pune, Nashik, Furnished, and Unfurnished.
+
+There are two commonly used encoding techniques:
+
+**1. Label Encoding**
+
+Label Encoding assigns a unique numerical value to each category.
+
+Example:
+
+| Property Type | Encoded Value |
+| ------------- | ------------- |
+| Apartment     | 0             |
+| Villa         | 1             |
+| Plot          | 2             |
+
+- Each category is represented by a numerical label.
+- It is useful when categories have a meaningful order or when an algorithm can handle arbitrary category codes.
+- For nominal categories, arbitrary numbers may incorrectly suggest an order.
+
+**2. One-Hot Encoding**
+
+One-Hot Encoding creates separate binary columns for each category.
+
+Example:
+
+| Property Type | Apartment | Villa | Plot |
+| ------------- | --------- | ----- | ---- |
+| Apartment     | 1         | 0     | 0    |
+| Villa         | 0         | 1     | 0    |
+| Plot          | 0         | 0     | 1    |
+
+- Each category gets a separate column.
+- Value 1 represents the presence of a category.
+- Value 0 represents its absence.
+- It avoids assigning an artificial numerical order to categories.
+
+### **C. Merging**
+
+Merging is the process of combining two or more datasets using a common column or key.
+
+For example:
+
+**Dataset 1: Property Details**
+
+| Property ID | Property Type | Price   |
+| ----------- | ------------- | ------- |
+| 101         | Apartment     | 4500000 |
+| 102         | Villa         | 8000000 |
+| 103         | Plot          | 3000000 |
+
+**Dataset 2: Location Details**
+
+| Property ID | Location |
+| ----------- | -------- |
+| 101         | Nashik   |
+| 102         | Pune     |
+| 103         | Mumbai   |
+
+After merging:
+
+| Property ID | Property Type | Price   | Location |
+| ----------- | ------------- | ------- | -------- |
+| 101         | Apartment     | 4500000 | Nashik   |
+| 102         | Villa         | 8000000 | Pune     |
+| 103         | Plot          | 3000000 | Mumbai   |
+
+Here, `Property ID` is the common key used to combine both datasets.
+
+### **Types of Merging**
+
+| Join Type  | Description                                                                            |
+| ---------- | -------------------------------------------------------------------------------------- |
+| Inner Join | Returns only matching records from both datasets.                                      |
+| Left Join  | Returns all records from the left dataset and matching records from the right dataset. |
+| Right Join | Returns all records from the right dataset and matching records from the left dataset. |
+| Outer Join | Returns all records from both datasets, including unmatched records.                   |
+
+## **3. Working / Steps**
+
+1. Import required Python libraries such as Pandas, NumPy, and Scikit-learn.
+2. Load the real estate dataset using Pandas.
+3. Load another dataset containing additional property or location information.
+4. Display the first five records using `head()`.
+5. Check dataset information using `info()` and `describe()`.
+6. Identify missing values and duplicate records.
+7. Handle missing values using suitable techniques.
+8. Identify categorical columns such as property type and location.
+9. Apply Label Encoding or One-Hot Encoding to categorical columns.
+10. Merge both datasets using a common key such as Property ID.
+11. Verify the merged dataset and check its structure.
+12. Save the final processed dataset in CSV format.
+
+## **4. Important Python Functions**
+
+| Function               | Purpose                                    |
+| ---------------------- | ------------------------------------------ |
+| `pd.read_csv()`        | Loads a CSV dataset.                       |
+| `df.head()`            | Displays first five records.               |
+| `df.info()`            | Displays dataset information.              |
+| `df.isnull().sum()`    | Checks missing values.                     |
+| `df.drop_duplicates()` | Removes duplicate records.                 |
+| `LabelEncoder()`       | Converts categories into numerical labels. |
+| `pd.get_dummies()`     | Performs One-Hot Encoding.                 |
+| `pd.merge()`           | Merges datasets using common columns.      |
+| `pd.concat()`          | Combines DataFrames along rows or columns. |
+| `df.to_csv()`          | Saves the processed dataset.               |
+
+## **5. Advantages**
+
+1. Improves the quality of raw data.
+2. Converts categorical data into numerical format.
+3. Combines information from multiple datasets.
+4. Makes data suitable for machine learning algorithms.
+5. Helps identify errors and inconsistencies.
+6. Supports better analysis and decision-making.
+
+## **6. Applications**
+
+1. **Property Price Prediction:** Predicting property prices based on location, area, and property type.
+2. **Real Estate Market Analysis:** Studying property prices in different cities.
+3. **Property Recommendation:** Recommending properties according to customer preferences.
+4. **Location Analysis:** Comparing property demand across different locations.
+5. **Investment Analysis:** Identifying suitable properties for investment.
+
+## **7. Libraries Used**
+
+- **Pandas:** Loading, cleaning, transforming, and merging datasets.
+- **NumPy:** Performing numerical operations.
+- **Scikit-learn:** Applying Label Encoding and other preprocessing techniques.
+- **Matplotlib:** Creating visualizations.
+- **Seaborn:** Statistical data visualization.
+
+## **8. Conclusion**
+
+In this practical, data wrangling was performed on a Real Estate dataset using encoding and merging techniques. Categorical values were converted into numerical representations, and multiple datasets were combined using a common key. This process helps prepare clean and structured data for further analysis and machine learning applications.
+
+## **9. Viva Questions with Answers (15)**
+
+**Q1. What is Data Wrangling?**
+
+Data Wrangling is the process of cleaning, transforming, and organizing raw data into a structured format suitable for analysis.
+
+**Q2. What is the other name for Data Wrangling?**
+
+Data Munging.
+
+**Q3. Why is Data Wrangling important?**
+
+It improves data quality, removes inconsistencies, handles missing values, and prepares data for analysis.
+
+**Q4. What is Encoding?**
+
+Encoding is the process of converting categorical data into numerical values.
+
+**Q5. Why is Encoding required in Machine Learning?**
+
+Many machine learning algorithms require numerical input, so categorical values must be converted into numerical representations.
+
+**Q6. What is Label Encoding?**
+
+Label Encoding assigns a unique integer value to each category.
+
+Example: Apartment = 0, Villa = 1, Plot = 2.
+
+**Q7. What is One-Hot Encoding?**
+
+One-Hot Encoding converts each category into a separate binary column containing 0 or 1.
+
+**Q8. What is the difference between Label Encoding and One-Hot Encoding?**
+
+Label Encoding assigns integer labels to categories, whereas One-Hot Encoding creates separate binary columns for each category.
+
+**Q9. What is categorical data?**
+
+Categorical data represents groups or categories, such as location, gender, property type, and furnishing status.
+
+**Q10. What is Merging in Pandas?**
+
+Merging is the process of combining two DataFrames using a common column or key.
+
+**Q11. Which function is used to merge two DataFrames?**
+
+The `pd.merge()` function is used to merge two DataFrames.
+
+**Q12. What is a common key?**
+
+A common key is a column present in two datasets that is used to combine their records.
+
+Example: Property ID.
+
+**Q13. What are the different types of joins?**
+
+The four main types are Inner Join, Left Join, Right Join, and Outer Join.
+
+**Q14. What is the difference between Merge and Concatenation?**
+
+Merge combines datasets based on common columns or keys, whereas concatenation combines datasets along rows or columns.
+
+**Q15. What are the applications of Data Wrangling in Real Estate?**
+
+It is used for property price prediction, market analysis, location comparison, property recommendations, and investment analysis.
+
+## **10. Quick Hinglish Understanding**
+
+Imagine ek real estate company ke paas do Excel files hain:
+
+- First file: Property ID, Property Type, Price.
+- Second file: Property ID, Location, Bedrooms.
+
+**Problem 1 – Encoding:** Computer ko Apartment, Villa jaise text categories numerical form mein convert karke dena hota hai.
+
+**Problem 2 – Merging:** Dono files ko Property ID ke basis par combine karna hota hai.
+
+**Final Result:** Ek single clean dataset milta hai jisme property ki complete information hoti hai.
+
+**Remember the practical in three words:**
+
+- **Wrangling:** Data clean and organize karna.
+- **Encoding:** Text categories ko numbers mein convert karna.
+- **Merging:** Multiple datasets ko combine karna.
+
+
+
+
+
+
+code explaination:
+
+
+
+## **Step 1: Import required libraries**
+
+```
+import pandas as pdimport numpy as np
+```
+
+- `pandas`: Used for data manipulation, merging and analysis.
+- `numpy`: Used for numerical operations.
+- `pd` and `np` are aliases for Pandas and NumPy.
+
+**Note:** NumPy is imported in this program but is not directly used.
+
+## **Step 2: Create Property Dataset**
+
+```
+property_data = {    'Property_ID': [101, 102, 103, 104, 105],    'Owner_ID': [1, 2, 3, 1, 2],    'City': ['Nashik', 'Pune', 'Mumbai', 'Pune', 'Nashik'],    'Property_Type': ['Flat', 'House', 'Flat', 'Plot', 'House'],    'Price': [4500000, 6500000, 8000000, 3000000, 5500000]}
+```
+
+- `property_data` is a dictionary containing property information.
+- `Property_ID`: Unique identification number of each property.
+- `Owner_ID`: Identification number of the property owner.
+- `City`: City where the property is located.
+- `Property_Type`: Type of property, such as Flat, House or Plot.
+- `Price`: Price of the property.
+
+```
+property_df = pd.DataFrame(property_data)
+```
+
+- `pd.DataFrame()` converts the dictionary into a DataFrame.
+- `property_df` stores the property dataset.
+
+## **Step 3: Create Owner Dataset**
+
+```
+owner_data = {    'Owner_ID': [1, 2, 3],    'Owner_Name': ['Amit', 'Rahul', 'Priya'],    'Contact': [9876543210, 9876543211, 9876543212]}
+```
+
+- `owner_data` is a dictionary containing owner information.
+- `Owner_ID`: Unique identification number of each owner.
+- `Owner_Name`: Name of the property owner.
+- `Contact`: Contact number of the owner.
+
+```
+owner_df = pd.DataFrame(owner_data)
+```
+
+- Converts the owner dictionary into a DataFrame.
+- `owner_df` stores the owner dataset.
+
+**Display both datasets**
+
+```
+print("Property Dataset:")print(property_df)print("\nOwner Dataset:")print(owner_df)
+```
+
+- Displays the property dataset.
+- Displays the owner dataset.
+- `\n` inserts a new line before the second heading.
+
+## **Step 4: Merge both datasets**
+
+```
+merged_df = pd.merge(    property_df,    owner_df,    on='Owner_ID',    how='inner')
+```
+
+- `pd.merge()` combines two DataFrames into a single DataFrame.
+- `property_df` is the first dataset.
+- `owner_df` is the second dataset.
+- `on='Owner_ID'` specifies the common column used to combine both datasets.
+- `how='inner'` performs an Inner Join.
+- `merged_df` stores the combined dataset.
+
+**What is Inner Join?**
+
+Inner Join returns only those records where the common column exists in both datasets.
+
+For example:
+
+- Owner ID 1 belongs to Amit.
+- Owner ID 2 belongs to Rahul.
+- Owner ID 3 belongs to Priya.
+
+Their names and contact numbers are added to their respective property records.
+
+```
+print("\nMerged Dataset:")print(merged_df)
+```
+
+\- Displays the merged dataset containing property and owner information.
+
+## **Step 5: Apply One-Hot Encoding**
+
+```
+encoded_df = pd.get_dummies(    merged_df,    columns=['City', 'Property_Type'],    dtype=int)
+```
+
+- `pd.get_dummies()` performs One-Hot Encoding.
+- `merged_df` is the input DataFrame.
+- `columns=['City', 'Property_Type']` specifies the categorical columns to encode.
+- `dtype=int` creates integer values (0 and 1) instead of Boolean values.
+- `encoded_df` stores the encoded dataset.
+
+**What is One-Hot Encoding?**
+
+One-Hot Encoding converts categorical values into separate numerical columns containing 0 and 1.
+
+For example, the City column contains:
+
+| City   |
+| ------ |
+| Nashik |
+| Pune   |
+| Mumbai |
+
+After encoding:
+
+| City_Nashik | City_Pune | City_Mumbai |
+| ----------- | --------- | ----------- |
+| 1           | 0         | 0           |
+| 0           | 1         | 0           |
+| 0           | 0         | 1           |
+
+Similarly, the `Property_Type` column creates:
+
+- `Property_Type_Flat`
+- `Property_Type_House`
+- `Property_Type_Plot`
+
+Here:
+
+- `1` means the category is present.
+- `0` means the category is absent.
+
+```
+print("\nEncoded Dataset:")print(encoded_df)
+```
+
+\- Displays the final dataset after One-Hot Encoding.
+
+## **Step 6: Display final dataset information**
+
+```
+print("\nFinal Dataset Information:")print(encoded_df.info())
+```
+
+- `encoded_df.info()` displays the final DataFrame structure.
+- Shows the number of rows and columns.
+- Displays column names and data types.
+- Shows non-null values and memory usage.
+- Helps verify the final merged and encoded dataset.
+
+**Note:** Use `encoded_df.info()` directly instead of `print(encoded_df.info())` to avoid an extra `None` in the output.

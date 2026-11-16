@@ -1,0 +1,575 @@
+Practical 11 Data Visualization using Matplotlib and Seaborn (Air Quality)
+
+CODE:
+
+
+
+# Step 1: Import required libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Step 2: Create sample Air Quality dataset
+data = {
+    'Day': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    'PM2.5': [45, 60, 55, 70, 80, 65, 50],
+    'PM10': [80, 95, 90, 110, 120, 100, 85],
+    'NO2': [20, 25, 22, 30, 35, 28, 24]
+}
+
+df = pd.DataFrame(data)
+
+print("Air Quality Dataset:")
+print(df)
+
+# Step 3: Line Plot
+plt.figure(figsize=(8, 4))
+plt.plot(df['Day'], df['PM2.5'], marker='o',
+         label='PM2.5')
+plt.plot(df['Day'], df['PM10'], marker='s',
+         label='PM10')
+
+plt.title('Air Quality Analysis - Line Plot')
+plt.xlabel('Days')
+plt.ylabel('Pollution Level')
+plt.legend()
+plt.grid()
+plt.show()
+
+# Step 4: Bar Plot
+plt.figure(figsize=(8, 4))
+sns.barplot(data=df, x='Day', y='PM2.5')
+
+plt.title('Daily PM2.5 Levels')
+plt.xlabel('Days')
+plt.ylabel('PM2.5')
+plt.show()
+
+# Step 5: Histogram
+plt.figure(figsize=(8, 4))
+sns.histplot(data=df, x='PM2.5', bins=5, kde=True)
+
+plt.title('Distribution of PM2.5')
+plt.xlabel('PM2.5 Level')
+plt.ylabel('Frequency')
+plt.show()
+
+# Step 6: Scatter Plot
+plt.figure(figsize=(8, 4))
+sns.scatterplot(data=df, x='PM2.5', y='PM10')
+
+plt.title('PM2.5 vs PM10')
+plt.xlabel('PM2.5')
+plt.ylabel('PM10')
+plt.show()
+
+# Step 7: Heatmap
+plt.figure(figsize=(6, 4))
+sns.heatmap(df[['PM2.5', 'PM10', 'NO2']].corr(),
+            annot=True, cmap='coolwarm')
+
+plt.title('Air Quality Correlation Heatmap')
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+## **1. Aim**
+
+To perform data visualization on an Air Quality dataset using Python libraries Matplotlib and Seaborn to understand patterns, trends, relationships, and distributions in air pollution data.
+
+## **2. Theory**
+
+### **A. Data Visualization**
+
+Data Visualization is the process of representing data in graphical or visual form, such as charts, graphs, and plots, to understand complex information easily.
+
+In an Air Quality dataset, visualization helps us understand pollution levels and identify changes in air quality.
+
+Common air quality parameters include:
+
+- PM2.5 – Fine particulate matter.
+- PM10 – Coarse particulate matter.
+- NO2 – Nitrogen dioxide.
+- SO2 – Sulphur dioxide.
+- CO – Carbon monoxide.
+- O3 – Ozone.
+- AQI – Air Quality Index.
+
+**Example:** We can use a line graph to show how the AQI changes over time or a bar chart to compare pollution levels in different cities.
+
+### **B. Matplotlib**
+
+[Data Visualization using Matplotlib - Data Science and ML](https://images.openai.com/static-rsc-4/uqQzBu-7g6vYyCopzGlQOtFIxuGl13u_XQBOYUWD3BJUGiTAPZoP1h6rd4BLigr-XQO1v0S0ePtr66D75iRTpsp41d5GEMc09UukL8PoJOe5jy56ZgkuS29pFkzGpB6BkR0Cp6wpSljDrrsPLiqrWpeD2TddBx_Ar-C6mkiJXnU?purpose=inline)
+
+**Matplotlib** is a Python library used to create static, animated, and interactive visualizations.
+
+It provides functions to create different types of charts and graphs.
+
+Important functions:
+
+| Function        | Purpose                 |
+| --------------- | ----------------------- |
+| `plt.plot()`    | Creates a line graph.   |
+| `plt.bar()`     | Creates a bar chart.    |
+| `plt.scatter()` | Creates a scatter plot. |
+| `plt.hist()`    | Creates a histogram.    |
+| `plt.pie()`     | Creates a pie chart.    |
+| `plt.xlabel()`  | Sets X-axis label.      |
+| `plt.ylabel()`  | Sets Y-axis label.      |
+| `plt.title()`   | Sets chart title.       |
+| `plt.show()`    | Displays the graph.     |
+
+### **C. Seaborn**
+
+[seaborn.pairplot — seaborn 0.13.2 documentation](https://images.openai.com/static-rsc-4/JTlyi6k4VqTNLg2kfR_uEI8DK8cQdb036vllgYkAcxjUOi6-Ou4Vfgc97rCtzXi94xC_sn_D5gCRqdjRpZtbwvfEs96WgJmftLyhNpClYSW3LtiwQ7aAyt5gD9tXRJdwuooBijBSd94WK2o3JYmKgRmdxJn2VBVJsY959S-D8kg?purpose=inline)
+
+**Seaborn** is a Python data visualization library built on top of Matplotlib. It is mainly used for statistical data visualization.
+
+It provides attractive and informative statistical graphs with simpler commands.
+
+Important functions:
+
+| Function            | Purpose                                         |
+| ------------------- | ----------------------------------------------- |
+| `sns.barplot()`     | Creates a statistical bar plot.                 |
+| `sns.histplot()`    | Displays data distribution.                     |
+| `sns.boxplot()`     | Identifies data spread and possible outliers.   |
+| `sns.heatmap()`     | Displays values using colors.                   |
+| `sns.scatterplot()` | Shows relationships between variables.          |
+| `sns.lineplot()`    | Displays trends over time.                      |
+| `sns.pairplot()`    | Shows relationships between multiple variables. |
+
+### **D. Common Types of Data Visualization**
+
+[Line chart in Matplotlib - Python - GeeksforGeeks](https://images.openai.com/static-rsc-4/m57R6oywsi3mUqgMMUPdAdaxuKGsTfzBzEtCxjCIvGmOrULPIFSQ9DFtZ3qUyzur4wrl43OtTB-C_7vri43Bqtrp5T6UGSZnW8Zkvsi90BJ_jxPFSdyV8acYCUdndMaXRHVKSwbL-ekPCGS5QiiS1VYXhfeu3DU0KnpyYO0t-rE?purpose=inline)
+
+**1. Line Chart**
+
+Used to represent changes or trends over time.
+
+Example: Daily AQI changes.
+
+[Data Visualization with Matplotlib – datanovia](https://images.openai.com/static-rsc-4/VTlvlq8gGZav7fiXLaF8OELZvBrQAOiXnKP8JRmHMejyzFoWIyiM4A-S-Ae1t7y-wmMUQ5DiPKRK1Pc531KbnMjl27BnuQ0W__MdcEOFF6e-xQcdOf9XVuYrGSBeCRZGZdSpZXFx-1qU13we4CPZ3dI0XMLYo7XjNe_T8BYyCf0?purpose=inline)
+
+**2. Bar Chart**
+
+Used to compare values between different categories.
+
+Example: Comparing pollution levels across cities.
+
+[What is a histogram? | HK Playground](https://images.openai.com/static-rsc-4/J7IXvev6Z_Wy-X8SC9jzgrGHakHJcNc6TwmUN4bFEFKdyqUQ6qDHrBwaZ7BggBQedc-uGUQiGiNzLrMDya2uPYuQdFh7auIaY3coDnN8RWPApLWX9iI7pMF2TfdIvmQpx2_D9_htrZJdhUz4E6FxaJiMBQy7uB2kPDlb3INgngA?purpose=inline)
+
+**3. Histogram**
+
+Used to understand the frequency distribution of numerical data.
+
+Example: Distribution of AQI values.
+
+[Programming Across Disciplines](https://images.openai.com/static-rsc-4/4mydRhoHICR4-WCHVw5x5HVpT4nFNR5yTc_0luX0EnwVZfLfeOYTKSzcoA1GEelFfPmPCdbWOIwUpyqPS-jRVhP4J7gFR0WsaEwy-Qhu-vYKB6l10q4YJv_9lTJeNAGNU_55urxJIKN4FX8OdY-mc5hAeVMPC-xOgFYOQJZzgAY?purpose=inline)
+
+**4. Scatter Plot**
+
+Used to identify relationships between two numerical variables.
+
+Example: Relationship between PM2.5 and AQI.
+
+[matplotlib vs seaborn：データ可視化ライブラリ徹底比較！ | アマチュア無線局JS2IIU](https://images.openai.com/static-rsc-4/frxGpCOVEKN9E7eNyWU2VilL05MShB3rsTfetoO_3DZtssgNfRzl_2m_n42RvvY6kygvbago9EIU2hkdy2nN7lABnX4OwvSpDcKTYTyNi1mfDSfe3Ro2W9u_f3vVWtLbTo6kyjPFdw-XDf3Su1sCwGxQiMTUCf7mrtvdt1ELNkc?purpose=inline)
+
+**5. Heatmap**
+
+Uses different colors to represent numerical values.
+
+Example: Correlation between air pollution parameters.
+
+[How to Create Boxplot in Matplotlib | Delft Stack](https://images.openai.com/static-rsc-4/g9UGyelSjCNekt179ydudPp0pvsWVAL1ViXi1ByBkBKJI58q1Amd1WQs1USP8Y321xWnIzsTnRwmeOGj3HppeANf-Sc8r1xT_WgWUKksVOVCGPmAqYjnqZMjpJIvHcInd_mZ4gE3XNUvZDGLP85xgJJ9LeJvgT_gjRsM16QNsJQ?purpose=inline)
+
+**6. Box Plot**
+
+Shows the distribution, median, quartiles, and possible outliers in data.
+
+Example: Identifying unusually high pollution readings.
+
+## **3. Working / Steps**
+
+1. Import required libraries such as Pandas, Matplotlib, and Seaborn.
+2. Load the Air Quality dataset using Pandas.
+3. Display the first five records using `head()`.
+4. Check dataset information using `info()`.
+5. Check missing values using `isnull().sum()`.
+6. Perform necessary data cleaning.
+7. Select important numerical columns such as PM2.5, PM10, NO2, and AQI.
+8. Create a line chart to understand pollution trends.
+9. Create a bar chart to compare pollution levels.
+10. Create a histogram to understand the distribution of AQI.
+11. Create a scatter plot to examine relationships between pollution parameters.
+12. Create a heatmap to visualize correlations.
+13. Use `plt.show()` to display the visualizations.
+14. Analyze the graphs and identify important patterns.
+
+## **4. Important Concepts**
+
+**1. Figure:** The complete area containing one or more plots.
+
+**2. Axes:** The area where an individual graph is displayed.
+
+**3. X-axis:** Represents independent variables or categories.
+
+**4. Y-axis:** Represents dependent variables or measured values.
+
+**5. Correlation:** Measures the relationship between two numerical variables.
+
+**6. Outlier:** A value that is significantly different from other observations.
+
+**7. Color Map:** Represents numerical values using different colors, especially in heatmaps.
+
+## **5. Difference Between Matplotlib and Seaborn**
+
+| Matplotlib                                 | Seaborn                                         |
+| ------------------------------------------ | ----------------------------------------------- |
+| Basic Python visualization library.        | Statistical visualization library.              |
+| Provides more manual customization.        | Provides attractive default styles.             |
+| Suitable for general-purpose graphs.       | Suitable for statistical graphs.                |
+| Requires more code for some complex plots. | Often requires less code for statistical plots. |
+| Uses `plt` as its common alias.            | Uses `sns` as its common alias.                 |
+
+**Important:** Seaborn is built on top of Matplotlib, so both libraries can be used together.
+
+## **6. Advantages**
+
+1. Makes complex data easy to understand.
+2. Helps identify patterns and trends.
+3. Helps detect outliers.
+4. Supports better decision-making.
+5. Provides different types of graphical representations.
+6. Helps compare pollution levels.
+7. Makes data analysis more effective.
+
+## **7. Applications**
+
+1. **Air Pollution Monitoring:** Monitoring PM2.5, PM10, and AQI levels.
+2. **Environmental Research:** Studying pollution patterns.
+3. **Weather Analysis:** Understanding environmental changes.
+4. **Health Studies:** Analyzing possible relationships between pollution and health-related data.
+5. **Government Planning:** Supporting pollution-control decisions.
+6. **Data Science:** Exploring datasets before applying machine learning.
+
+## **8. Libraries Used**
+
+- **Pandas:** Loading and manipulating datasets.
+- **NumPy:** Numerical calculations.
+- **Matplotlib:** Creating graphs and charts.
+- **Seaborn:** Creating statistical visualizations.
+
+## **9. Conclusion**
+
+In this practical, data visualization was performed on an Air Quality dataset using Matplotlib and Seaborn. Different visualizations such as line charts, bar charts, histograms, scatter plots, box plots, and heatmaps were studied. These visualizations help understand pollution patterns, identify relationships between parameters, and analyze air quality effectively.
+
+## **10. Viva Questions with Answers (15)**
+
+**Q1. What is Data Visualization?**
+
+Data Visualization is the graphical representation of data using charts, graphs, and plots to understand information easily.
+
+**Q2. What is Matplotlib?**
+
+Matplotlib is a Python library used to create different types of data visualizations, such as line graphs, bar charts, and histograms.
+
+**Q3. What is Seaborn?**
+
+Seaborn is a Python statistical visualization library built on top of Matplotlib.
+
+**Q4. What is the main difference between Matplotlib and Seaborn?**
+
+Matplotlib provides general-purpose plotting and detailed customization, whereas Seaborn provides convenient statistical visualizations with attractive default styles.
+
+**Q5. Which function is used to create a line graph?**
+
+`plt.plot()` is used to create a line graph.
+
+**Q6. Which function is used to create a bar chart?**
+
+`plt.bar()` in Matplotlib and `sns.barplot()` in Seaborn.
+
+**Q7. What is a histogram?**
+
+A histogram is a graph used to represent the frequency distribution of numerical data.
+
+**Q8. What is a scatter plot?**
+
+A scatter plot represents the relationship between two numerical variables using points.
+
+**Q9. What is a heatmap?**
+
+A heatmap represents numerical values using different colors to make patterns and relationships easier to identify.
+
+**Q10. What is a box plot?**
+
+A box plot represents data distribution using quartiles, median, and whiskers. It also helps identify possible outliers.
+
+**Q11. What is AQI?**
+
+AQI stands for Air Quality Index. It indicates the quality of air and the level of air pollution.
+
+**Q12. What is PM2.5?**
+
+PM2.5 refers to fine particulate matter with a diameter of 2.5 micrometers or smaller.
+
+**Q13. Which function is used to display a graph?**
+
+`plt.show()` is used to display a graph.
+
+**Q14. What is correlation?**
+
+Correlation measures the strength and direction of the relationship between two numerical variables.
+
+**Q15. Why are Matplotlib and Seaborn used in Air Quality Analysis?**
+
+They are used to visualize pollution levels, identify trends, compare air quality parameters, and understand relationships between different pollutants.
+
+## **11. Quick Hinglish Understanding**
+
+Imagine government ko Nashik ki air quality monitor karni hai.
+
+Dataset mein PM2.5, PM10, NO2 aur AQI values available hain.
+
+Ab graphs se samjhenge:
+
+- **Line Graph:** Time ke saath pollution badh raha hai ya kam?
+- **Bar Graph:** Kis city ka pollution zyada hai?
+- **Histogram:** AQI values ka distribution kaisa hai?
+- **Scatter Plot:** PM2.5 badhne par AQI kaise change hota hai?
+- **Heatmap:** Different pollution parameters ke beech correlation kitna hai?
+- **Box Plot:** Dataset mein unusually high ya low values hain kya?
+
+**Remember:**
+
+- Matplotlib = General graphs banana.
+- Seaborn = Statistical graphs banana.
+- Data Visualization = Data ko graphs ke through understand karna.
+
+**One-line practical flow:** Load Dataset → Clean Data → Create Graphs → Analyze Patterns → Understand Air Quality.
+
+
+
+
+code explaination:
+
+
+
+# **Practical 11: Air Quality Data Visualization using Matplotlib and Seaborn**
+
+## **Step 1: Import required libraries**
+
+```
+import pandas as pdimport numpy as npimport matplotlib.pyplot as pltimport seaborn as sns
+```
+
+- `pandas`: Used for creating and handling datasets.
+- `numpy`: Used for numerical operations.
+- `matplotlib.pyplot`: Used to create graphs and visualizations.
+- `seaborn`: Used to create attractive statistical graphs.
+- `pd`, `np`, `plt`, and `sns` are aliases for these libraries.
+
+## **Step 2: Create sample Air Quality dataset**
+
+```
+data = {    'Day': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],    'PM2.5': [45, 60, 55, 70, 80, 65, 50],    'PM10': [80, 95, 90, 110, 120, 100, 85],    'NO2': [20, 25, 22, 30, 35, 28, 24]}
+```
+
+- `data` is a dictionary containing air quality information for seven days.
+- `Day`: Days of the week.
+- `PM2.5`: Fine particulate matter concentration.
+- `PM10`: Coarse particulate matter concentration.
+- `NO2`: Nitrogen dioxide concentration.
+
+```
+df = pd.DataFrame(data)print("Air Quality Dataset:")print(df)
+```
+
+- `pd.DataFrame(data)` converts the dictionary into a DataFrame.
+- `df` stores the dataset.
+- `print()` displays the air quality data.
+
+## **Step 3: Line Plot**
+
+```
+plt.figure(figsize=(8, 4))
+```
+
+- Creates a new figure for the graph.
+- `figsize=(8, 4)` sets the width to 8 inches and height to 4 inches.
+
+```
+plt.plot(df['Day'], df['PM2.5'], marker='o',         label='PM2.5')
+```
+
+- `plt.plot()` creates a line graph.
+- `df['Day']` represents the X-axis.
+- `df['PM2.5']` represents the Y-axis.
+- `marker='o'` displays circular markers at each data point.
+- `label='PM2.5'` assigns a legend name to the line.
+
+```
+plt.plot(df['Day'], df['PM10'], marker='s',         label='PM10')
+```
+
+- Creates another line on the same graph.
+- `df['PM10']` provides the PM10 values.
+- `marker='s'` displays square markers.
+- `label='PM10'` identifies this line in the legend.
+
+```
+plt.title('Air Quality Analysis - Line Plot')plt.xlabel('Days')plt.ylabel('Pollution Level')plt.legend()plt.grid()plt.show()
+```
+
+- `title()` sets the graph title.
+- `xlabel()` sets the horizontal axis label.
+- `ylabel()` sets the vertical axis label.
+- `legend()` displays the names of both lines.
+- `grid()` displays grid lines.
+- `show()` displays the graph.
+
+**Graph interpretation:**
+
+- X-axis represents the days of the week.
+- Y-axis represents pollution levels.
+- Two lines compare PM2.5 and PM10 levels.
+- PM10 values are higher than PM2.5 values throughout the week.
+
+## **Step 4: Bar Plot**
+
+```
+plt.figure(figsize=(8, 4))sns.barplot(data=df, x='Day', y='PM2.5')
+```
+
+- `plt.figure()` creates a new graph.
+- `figsize=(8, 4)` defines the graph size.
+- `sns.barplot()` creates a bar chart using Seaborn.
+- `data=df` specifies the dataset.
+- `x='Day'` sets the X-axis.
+- `y='PM2.5'` sets the Y-axis.
+
+```
+plt.title('Daily PM2.5 Levels')plt.xlabel('Days')plt.ylabel('PM2.5')plt.show()
+```
+
+- Sets the graph title.
+- Sets the X-axis and Y-axis labels.
+- `show()` displays the bar chart.
+
+**Graph interpretation:**
+
+- Each bar represents the PM2.5 level for one day.
+- The height of the bar represents the pollution level.
+- Friday has the highest PM2.5 level (80).
+- Monday has the lowest PM2.5 level (45).
+
+## **Step 5: Histogram**
+
+```
+plt.figure(figsize=(8, 4))sns.histplot(data=df, x='PM2.5', bins=5, kde=True)
+```
+
+- `plt.figure()` creates a new figure.
+- `sns.histplot()` creates a histogram.
+- `data=df` specifies the dataset.
+- `x='PM2.5'` selects the PM2.5 column.
+- `bins=5` divides the PM2.5 values into five intervals.
+- `kde=True` displays a smooth density curve over the histogram.
+
+```
+plt.title('Distribution of PM2.5')plt.xlabel('PM2.5 Level')plt.ylabel('Frequency')plt.show()
+```
+
+- Sets the graph title.
+- X-axis represents PM2.5 values.
+- Y-axis represents frequency (number of observations).
+- Displays the histogram.
+
+**Graph interpretation:**
+
+- Shows the distribution of PM2.5 values.
+- Each bar represents the number of observations within an interval.
+- The KDE curve helps visualize the overall distribution pattern.
+
+## **Step 6: Scatter Plot**
+
+```
+plt.figure(figsize=(8, 4))sns.scatterplot(data=df, x='PM2.5', y='PM10')
+```
+
+- `plt.figure()` creates a new figure.
+- `sns.scatterplot()` creates a scatter plot.
+- `data=df` specifies the dataset.
+- `x='PM2.5'` represents the X-axis.
+- `y='PM10'` represents the Y-axis.
+- Each dot represents one day's air quality measurements.
+
+```
+plt.title('PM2.5 vs PM10')plt.xlabel('PM2.5')plt.ylabel('PM10')plt.show()
+```
+
+- Sets the graph title.
+- Sets the X-axis and Y-axis labels.
+- Displays the scatter plot.
+
+**Graph interpretation:**
+
+- Each point represents the relationship between PM2.5 and PM10.
+- The points show an overall positive relationship: higher PM2.5 values generally correspond to higher PM10 values.
+
+## **Step 7: Heatmap**
+
+```
+plt.figure(figsize=(6, 4))
+```
+
+- Creates a new figure.
+- Sets the graph width to 6 inches and height to 4 inches.
+
+```
+sns.heatmap(df[['PM2.5', 'PM10', 'NO2']].corr(),            annot=True, cmap='coolwarm')
+```
+
+- `sns.heatmap()` creates a correlation heatmap.
+- `df[['PM2.5', 'PM10', 'NO2']]` selects the three numerical columns.
+- `.corr()` calculates the correlation between these columns.
+- `annot=True` displays correlation values inside the cells.
+- `cmap='coolwarm'` applies a colour scheme to represent correlation values.
+
+**Understanding correlation:**
+
+- `+1`: Perfect positive correlation.
+- `0`: No linear correlation.
+- `-1`: Perfect negative correlation.
+
+\text{Learn more}
+
+```
+plt.title('Air Quality Correlation Heatmap')plt.show()
+```
+
+- `title()` sets the heatmap title.
+- `show()` displays the final heatmap.
+
+**Graph interpretation:**
+
+- The heatmap shows correlations between PM2.5, PM10 and NO2.
+- Values closer to +1 indicate a stronger positive linear relationship.
+- Values closer to -1 indicate a stronger negative linear relationship.
+- The diagonal values are always 1 because each variable is perfectly correlated with itself.
+
+
+
+
+

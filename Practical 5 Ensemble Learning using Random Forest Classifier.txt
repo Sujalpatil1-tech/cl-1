@@ -1,0 +1,326 @@
+Practical 5 Ensemble Learning using Random Forest Classifier
+
+CODE:
+
+
+
+# Step 1: Import required libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Step 2: Load Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Step 3: Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Step 4: Create Random Forest Classifier
+rf = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
+)
+
+# Step 5: Train the model
+rf.fit(X_train, y_train)
+
+# Step 6: Make predictions
+y_pred = rf.predict(X_test)
+
+# Step 7: Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+
+print("Accuracy:", accuracy * 100, "%")
+
+# Step 8: Display confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+print("\nConfusion Matrix:")
+print(cm)
+
+# Step 9: Display classification report
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# Step 10: Visualize confusion matrix
+plt.figure(figsize=(6, 4))
+
+plt.imshow(cm, cmap='Blues')
+plt.colorbar()
+
+plt.xlabel("Predicted Class")
+plt.ylabel("Actual Class")
+plt.title("Random Forest Confusion Matrix")
+
+plt.xticks([0, 1, 2], iris.target_names)
+plt.yticks([0, 1, 2], iris.target_names)
+
+for i in range(3):
+    for j in range(3):
+        plt.text(j, i, cm[i, j],
+                 ha='center', va='center')
+
+plt.show()
+
+
+
+
+
+
+
+
+# **Practical 5: Ensemble Learning Using Random Forest Classifier**
+
+## **1. Aim**
+
+To implement the Random Forest Classifier using ensemble learning and classify data points by combining the predictions of multiple decision trees.
+
+## **2. Theory**
+
+**Ensemble Learning** is a machine learning technique that combines multiple individual models to produce a better and more reliable prediction than a single model.
+
+The main idea of ensemble learning is that combining multiple models can improve prediction accuracy, reduce errors and increase model stability.
+
+**Random Forest** is a supervised machine learning algorithm used for classification and regression. It is an ensemble learning technique that combines multiple Decision Trees to produce the final prediction.
+
+In Random Forest Classification, each decision tree predicts a class, and the final output is selected using **majority voting**.
+
+### **Working of Random Forest Algorithm**
+
+[Virtual Labs](https://images.openai.com/static-rsc-4/zthFFok43ssFHhpd5WKwgjVggde6qqViEDIwLqqrCaQfrpkBKO_G4sbXEmtQAyoa57G80Nb3QBT78UmZJ57VbGE-BlJWH_hOm76r3QIlrz4bPoZ7g7bkqOB5GbrZalhBgJKi2UebvitBpf6mYJd_r7t5z2TQ8dmQMoH2L9tlxW0?purpose=inline)
+
+[virtual-labs.github.io](https://virtual-labs.github.io/exp-random-forest-dei/theory.html?utm_source=chatgpt.com)
+
+1. **Data Sampling:** Random samples are selected from the original training dataset using bootstrap sampling.
+2. **Create Decision Trees:** Multiple decision trees are constructed using different samples.
+3. **Random Feature Selection:** At each split, only a random subset of features is considered.
+4. **Individual Predictions:** Each decision tree predicts the class of the given input.
+5. **Majority Voting:** The algorithm counts the predictions from all decision trees.
+6. **Final Prediction:** The class receiving the maximum votes becomes the final output.
+
+**Example:**
+
+Suppose a Random Forest contains 5 decision trees that classify an email as Spam or Not Spam.
+
+- Tree 1: Spam
+- Tree 2: Spam
+- Tree 3: Not Spam
+- Tree 4: Spam
+- Tree 5: Not Spam
+
+Using majority voting:
+
+- Spam = 3 votes
+- Not Spam = 2 votes
+
+Final prediction = **Spam**.
+
+### **What is a Decision Tree?**
+
+A Decision Tree is a supervised machine learning algorithm that makes predictions using a tree-like structure of conditions and decisions.
+
+It contains:
+
+- **Root Node:** Starting point of the tree.
+- **Decision/Internal Node:** Represents a condition or feature test.
+- **Branch:** Represents the outcome of a decision.
+- **Leaf Node:** Represents the final prediction.
+
+### **Types of Ensemble Learning**
+
+1. **Bagging (Bootstrap Aggregating):** Multiple models are trained independently on different bootstrap samples, and their predictions are combined. Random Forest uses bagging.
+2. **Boosting:** Models are trained sequentially, where each new model focuses on correcting errors made by previous models.
+
+## **3. Working / Steps**
+
+1. **Import Libraries:** Import Pandas, NumPy, Matplotlib and Scikit-learn libraries.
+2. **Load Dataset:** Load the given classification dataset.
+3. **Explore Dataset:** Check rows, columns, data types and statistical information.
+4. **Data Preprocessing:** Handle missing values, duplicate records and categorical variables if required.
+5. **Feature Selection:** Separate independent variables (X) and dependent variable (y).
+6. **Train-Test Split:** Divide the dataset into training and testing sets.
+7. **Create Random Forest Model:** Import and initialize `RandomForestClassifier`.
+8. **Set Parameters:** Specify the number of trees using `n_estimators` and other required parameters.
+9. **Train Model:** Fit the Random Forest model using training data.
+10. **Make Predictions:** Predict class labels for testing data.
+11. **Evaluate Model:** Calculate accuracy, precision, recall, F1-score and confusion matrix.
+12. **Analyze Results:** Evaluate the classification performance of the model.
+
+## **4. Important Concepts**
+
+| Concept            | Meaning                                                          |
+| ------------------ | ---------------------------------------------------------------- |
+| Ensemble Learning  | Combining multiple models to improve predictions                 |
+| Random Forest      | Ensemble algorithm based on multiple decision trees              |
+| Decision Tree      | Tree-based model used for making predictions                     |
+| Bootstrap Sampling | Random sampling with replacement                                 |
+| Bagging            | Training multiple models independently and combining predictions |
+| Boosting           | Training models sequentially to correct previous errors          |
+| Majority Voting    | Selecting the class with the maximum votes                       |
+| n_estimators       | Number of decision trees in the forest                           |
+| Feature Importance | Measures the contribution of features to predictions             |
+| Overfitting        | Model learns training data too closely                           |
+
+### **Important Parameters of Random Forest**
+
+| Parameter         | Purpose                                            |
+| ----------------- | -------------------------------------------------- |
+| n_estimators      | Number of decision trees                           |
+| max_depth         | Maximum depth of each tree                         |
+| max_features      | Number of features considered for splitting        |
+| min_samples_split | Minimum samples required to split an internal node |
+| random_state      | Controls randomness for reproducibility            |
+| criterion         | Function used to measure the quality of a split    |
+
+### **Evaluation Metrics**
+
+Random Forest classification performance can be evaluated using:
+
+**1. Accuracy:** Percentage of correctly classified observations.
+
+\\[ Accuracy=\frac{TP+TN}{TP+TN+FP+FN} \\]
+
+**2. Precision:** Measures how many positive predictions are actually positive.
+
+\\[ Precision=\frac{TP}{TP+FP} \\]
+
+**3. Recall:** Measures how many actual positive cases are correctly identified.
+
+\\[ Recall=\frac{TP}{TP+FN} \\]
+
+**4. F1-Score:** Harmonic mean of precision and recall.
+
+\\[ F1=2\times\frac{Precision\times Recall}{Precision+Recall} \\]
+
+## **5. Advantages**
+
+1. Provides good classification performance.
+2. Combines multiple decision trees to improve prediction stability.
+3. Reduces overfitting compared with a single fully grown decision tree in many situations.
+4. Handles large datasets with multiple features.
+5. Can estimate feature importance.
+6. Supports both classification and regression.
+7. Works with complex relationships between features and target variables.
+
+## **6. Applications**
+
+1. Email spam detection.
+2. Medical disease prediction.
+3. Credit risk assessment.
+4. Fraud detection.
+5. Customer behavior analysis.
+6. Sentiment classification.
+7. Image classification.
+
+## **7. Libraries Used**
+
+| Library                | Purpose                                    |
+| ---------------------- | ------------------------------------------ |
+| Pandas                 | Loading and handling datasets              |
+| NumPy                  | Numerical operations                       |
+| Matplotlib             | Data visualization                         |
+| Seaborn                | Statistical visualization                  |
+| Scikit-learn           | Machine learning implementation            |
+| RandomForestClassifier | Implementing Random Forest                 |
+| train_test_split       | Dividing dataset                           |
+| accuracy_score         | Calculating accuracy                       |
+| confusion_matrix       | Evaluating classification results          |
+| classification_report  | Calculating precision, recall and F1-score |
+
+## **8. Conclusion**
+
+In this practical, ensemble learning was implemented using the Random Forest Classifier. Multiple decision trees were trained using bootstrap samples and random feature selection. Their individual predictions were combined using majority voting to obtain the final classification. The model performance was evaluated using accuracy, precision, recall, F1-score and confusion matrix.
+
+## **9. Viva Questions with Answers**
+
+**Q1. What is Ensemble Learning?**
+
+Ensemble Learning is a machine learning technique that combines multiple models to improve prediction performance.
+
+**Q2. What is Random Forest?**
+
+Random Forest is a supervised ensemble learning algorithm that combines multiple decision trees to make predictions.
+
+**Q3. Is Random Forest supervised or unsupervised?**
+
+Random Forest is a supervised machine learning algorithm.
+
+**Q4. What is a Decision Tree?**
+
+A Decision Tree is a tree-based algorithm that makes predictions using conditions and decision rules.
+
+**Q5. Why is Random Forest called a forest?**
+
+Because it consists of multiple decision trees working together.
+
+**Q6. What is Majority Voting?**
+
+Majority voting selects the class predicted by the maximum number of decision trees.
+
+**Q7. What is Bootstrap Sampling?**
+
+Bootstrap sampling is a technique that creates random samples from a dataset with replacement.
+
+**Q8. What is Bagging?**
+
+Bagging is an ensemble technique that trains multiple models independently on different bootstrap samples and combines their predictions.
+
+**Q9. What is Boosting?**
+
+Boosting is an ensemble technique that trains models sequentially, with each new model focusing on correcting previous errors.
+
+**Q10. What is n_estimators in Random Forest?**
+
+It is a parameter that specifies the number of decision trees in the Random Forest.
+
+**Q11. How does Random Forest reduce overfitting?**
+
+It combines multiple trees trained using different samples and feature subsets, reducing dependence on any single tree.
+
+**Q12. What is Feature Importance?**
+
+Feature importance indicates how much each input feature contributes to the predictions of a model.
+
+**Q13. Which Python library is used for Random Forest?**
+
+Scikit-learn provides the `RandomForestClassifier` class.
+
+**Q14. Can Random Forest be used for regression?**
+
+Yes. Random Forest supports both classification and regression using `RandomForestClassifier` and `RandomForestRegressor`.
+
+**Q15. What are the applications of Random Forest?**
+
+Disease prediction, fraud detection, spam detection, credit risk assessment and customer classification.
+
+### **Quick Hinglish Understanding**
+
+Suppose 5 doctors independently predict whether a patient has a particular disease.
+
+- Doctor 1: Yes
+- Doctor 2: Yes
+- Doctor 3: No
+- Doctor 4: Yes
+- Doctor 5: No
+
+Majority says Yes, so final prediction = Yes.
+
+Random Forest bhi isi tarah multiple Decision Trees ke predictions combine karta hai.
+
+**Remember:** Random Forest = Multiple Decision Trees + Bootstrap Sampling + Random Features + Majority Voting.
+
+**Most important viva difference:**
+
+- Decision Tree = Single tree.
+- Random Forest = Collection of multiple decision trees.
+- Bagging = Parallel model training.
+- Boosting = Sequential model training.

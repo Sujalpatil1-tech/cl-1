@@ -1,0 +1,700 @@
+Practical 3 Classification Analysis using K-Nearest Neighbors (KNN)
+
+CODE:
+
+
+
+# Step 1: Import required libraries
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Step 2: Load Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Step 3: Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Step 4: Standardize the data
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Step 5: Create KNN classifier
+knn = KNeighborsClassifier(n_neighbors=3)
+
+# Step 6: Train the model
+knn.fit(X_train, y_train)
+
+# Step 7: Make predictions
+y_pred = knn.predict(X_test)
+
+# Step 8: Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+
+print("Accuracy:", accuracy * 100, "%")
+
+# Step 9: Display confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+print("\nConfusion Matrix:")
+print(cm)
+
+# Step 10: Display classification report
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# Step 11: Visualize confusion matrix
+plt.figure(figsize=(6, 4))
+plt.imshow(cm, cmap='Blues')
+plt.colorbar()
+
+plt.xlabel("Predicted Class")
+plt.ylabel("Actual Class")
+plt.title("KNN Confusion Matrix")
+
+plt.xticks([0, 1, 2], iris.target_names)
+plt.yticks([0, 1, 2], iris.target_names)
+
+for i in range(3):
+    for j in range(3):
+        plt.text(j, i, cm[i, j], ha='center', va='center')
+
+plt.show()
+
+
+
+
+
+
+
+
+
+## **1. Aim**
+
+To perform classification analysis using the K-Nearest Neighbors (KNN) algorithm and classify data points based on their nearest neighbors.
+
+## **2. Theory**
+
+**Classification** is a supervised machine learning technique used to predict the category or class label of a given data point based on its input features.
+
+In classification, a model learns from labelled training data and predicts the class of new, unseen data.
+
+**K-Nearest Neighbors (KNN)** is a supervised machine learning algorithm used for classification and regression. It classifies a new data point by finding the K nearest data points in the training dataset and assigning the most common class among them.
+
+Here, K represents the number of nearest neighbors considered for classification.
+
+### **Working of KNN Algorithm**
+
+[K-Nearest Neighbors (KNN): A Simple Yet Powerful Machine Learning Algorithm | by Balu Anil Kumar | Feb, 2026 | Medium](https://images.openai.com/static-rsc-4/WBq3W4JX7X-wizdNs6PyfAsmJXhNZWKUZOxGhIQ5khuD7mUVmb8aAYpnhSmQYlkggk5Xt4gfUCPnmEXVbZ-d9DY0ZFg3K8Tb-MoET04AHYpP3F1-3wcENMEiOzu9uBmKWFFw9TdIJin0pGMOFXJ5D-XXboPiyeWIG0rZ2mAoMlw?purpose=inline)
+
+1. **Select K:** Choose the number of nearest neighbors, such as K = 3 or K = 5.
+2. **Calculate Distance:** Calculate the distance between the new data point and all training data points.
+3. **Find Nearest Neighbors:** Select the K data points having the smallest distances.
+4. **Majority Voting:** Count the class labels of the selected neighbors.
+5. **Classification:** Assign the new data point to the class having the highest number of votes.
+
+### **Distance Calculation**
+
+KNN commonly uses Euclidean distance to calculate the distance between two data points.
+
+\\[ d(x,y)=\sqrt{\sum\_{i=1}^{n}(x_i-y_i)^2} \\]
+
+Where:
+
+- \\(x_i\\) = Features of the first data point
+- \\(y_i\\) = Features of the second data point
+- \\(n\\) = Number of features
+- \\(d\\) = Distance between two points
+
+**Example:**
+
+Suppose we want to classify a new fruit as Apple or Orange using K = 5.
+
+Among its five nearest neighbors:
+
+- 3 are Apples.
+- 2 are Oranges.
+
+Using majority voting, KNN classifies the new fruit as an **Apple**.
+
+### **Choosing the Value of K**
+
+- Small K: Sensitive to noise and may cause overfitting.
+- Large K: May oversimplify the decision boundary and cause underfitting.
+- Odd K: Often preferred for binary classification to reduce ties.
+
+The best K value can be selected using experimentation or cross-validation.
+
+## **3. Working / Steps**
+
+1. **Import Libraries:** Import Pandas, NumPy and Scikit-learn libraries.
+2. **Load Dataset:** Load the classification dataset.
+3. **Explore Dataset:** Check the number of rows, columns, data types and statistical information.
+4. **Data Preprocessing:** Handle missing values and remove unnecessary columns if required.
+5. **Feature Selection:** Select independent variables (X) and target class (y).
+6. **Feature Scaling:** Apply StandardScaler or MinMaxScaler because KNN is distance-based.
+7. **Train-Test Split:** Divide the dataset into training and testing sets.
+8. **Create KNN Model:** Import and initialize the KNeighborsClassifier.
+9. **Train Model:** Fit the KNN model using training data.
+10. **Make Predictions:** Predict class labels for testing data.
+11. **Evaluate Model:** Calculate accuracy, confusion matrix, precision, recall and F1-score.
+12. **Analyze Results:** Check the classification performance of the model.
+
+## **4. Important Concepts**
+
+| Concept            | Meaning                                      |
+| ------------------ | -------------------------------------------- |
+| Classification     | Predicting categorical class labels          |
+| KNN                | Algorithm based on nearest neighbors         |
+| K                  | Number of nearest neighbors                  |
+| Euclidean Distance | Distance between two data points             |
+| Majority Voting    | Selecting the class with the highest votes   |
+| Feature Scaling    | Bringing features to a comparable scale      |
+| Training Data      | Data used to train the model                 |
+| Testing Data       | Data used to evaluate the model              |
+| Accuracy           | Percentage of correct predictions            |
+| Confusion Matrix   | Table comparing actual and predicted classes |
+
+### **Evaluation Metrics**
+
+**1. Accuracy**
+
+Measures the percentage of correctly classified observations.
+
+\\[ Accuracy=\frac{TP+TN}{TP+TN+FP+FN} \\]
+
+**2. Precision**
+
+Measures how many positive predictions are actually positive.
+
+\\[ Precision=\frac{TP}{TP+FP} \\]
+
+**3. Recall**
+
+Measures how many actual positive cases are correctly identified.
+
+\\[ Recall=\frac{TP}{TP+FN} \\]
+
+**4. F1-Score**
+
+It is the harmonic mean of precision and recall.
+
+\\[ F1=2\times\frac{Precision\times Recall}{Precision+Recall} \\]
+
+Where:
+
+- TP = True Positive
+- TN = True Negative
+- FP = False Positive
+- FN = False Negative
+
+## **5. Advantages**
+
+1. Simple and easy to understand.
+2. Easy to implement.
+3. No complex training process is required.
+4. Supports multi-class classification.
+5. Can be used for both classification and regression.
+6. Works well for smaller datasets with meaningful features.
+
+## **6. Applications**
+
+1. Email spam detection.
+2. Disease classification.
+3. Image recognition.
+4. Handwriting recognition.
+5. Customer classification.
+6. Recommendation systems.
+7. Credit risk classification.
+
+## **7. Libraries Used**
+
+| Library               | Purpose                                    |
+| --------------------- | ------------------------------------------ |
+| Pandas                | Loading and handling datasets              |
+| NumPy                 | Numerical operations                       |
+| Matplotlib            | Data visualization                         |
+| Seaborn               | Statistical visualization                  |
+| Scikit-learn          | Machine learning implementation            |
+| KNeighborsClassifier  | Implementing KNN classification            |
+| StandardScaler        | Feature scaling                            |
+| train_test_split      | Dividing dataset                           |
+| accuracy_score        | Calculating accuracy                       |
+| confusion_matrix      | Evaluating classification results          |
+| classification_report | Calculating precision, recall and F1-score |
+
+## **8. Conclusion**
+
+In this practical, classification analysis was performed using the K-Nearest Neighbors algorithm. The dataset was preprocessed, features were scaled and the data was divided into training and testing sets. The KNN model classified new data points based on their nearest neighbors using majority voting. The model performance was evaluated using accuracy, confusion matrix, precision, recall and F1-score.
+
+## **9. Viva Questions with Answers**
+
+**Q1. What is Classification?**
+
+Classification is a supervised machine learning technique used to predict categorical class labels.
+
+**Q2. What is KNN?**
+
+K-Nearest Neighbors is a supervised machine learning algorithm that classifies a data point based on its nearest neighbors.
+
+**Q3. What does K represent in KNN?**
+
+K represents the number of nearest neighbors considered for classification.
+
+**Q4. Is KNN supervised or unsupervised?**
+
+KNN is a supervised machine learning algorithm.
+
+**Q5. How does KNN work?**
+
+It calculates distances, finds the K nearest neighbors and assigns the majority class to the new data point.
+
+**Q6. What is Euclidean Distance?**
+
+It is the straight-line distance between two points in a feature space.
+
+**Q7. Which distance metric is commonly used in KNN?**
+
+Euclidean distance is commonly used.
+
+**Q8. What is Majority Voting?**
+
+Majority voting selects the class that occurs most frequently among the K nearest neighbors.
+
+**Q9. Why is feature scaling important in KNN?**
+
+Because KNN uses distance calculations, features with larger numerical ranges can dominate the distance if scaling is not applied.
+
+**Q10. What happens when K is very small?**
+
+The model becomes sensitive to noise and may overfit the training data.
+
+**Q11. What happens when K is very large?**
+
+The model may become too generalized and may underfit the data.
+
+**Q12. Why is KNN called a lazy learning algorithm?**
+
+Because it does not build an explicit model during training. It mainly stores the training data and performs calculations when predictions are required.
+
+**Q13. What is a Confusion Matrix?**
+
+It is a table used to compare actual class labels with predicted class labels.
+
+**Q14. What is Accuracy?**
+
+Accuracy is the ratio of correctly predicted observations to the total number of observations.
+
+**Q15. Can KNN be used for regression?**
+
+Yes. KNN Regression predicts a numerical value using the average or weighted average of its nearest neighbors.
+
+### **Quick Hinglish Understanding**
+
+Suppose ek new fruit classify karna hai.
+
+- K = 5 select kiya.
+- New fruit ke 5 nearest fruits find kiye.
+- 3 Apple aur 2 Orange mile.
+- Majority Apple hai, isliye new fruit = Apple.
+
+**Remember:** KNN = Distance Calculation → Nearest Neighbors → Majority Voting → Classification.
+
+
+
+
+
+
+
+code explaination:
+
+
+
+
+## **Step 1: Import required libraries**
+
+```
+import numpy as npimport matplotlib.pyplot as pltfrom sklearn.datasets import load_irisfrom sklearn.model_selection import train_test_splitfrom sklearn.preprocessing import StandardScalerfrom sklearn.neighbors import KNeighborsClassifierfrom sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+```
+
+**Line 1:**
+
+- `import numpy as np` – Imports the NumPy library.
+- `numpy` – Used for numerical and mathematical operations.
+- `np` – Short name (alias) for NumPy.
+
+**Line 2:**
+
+- `import matplotlib.pyplot as plt` – Imports the Pyplot module.
+- `plt` – Used to create graphs and visualizations.
+
+**Line 3:**
+
+- `from sklearn.datasets import load_iris` – Imports the Iris dataset.
+- `load_iris` – Loads flower measurement data from Scikit-learn.
+
+**Line 4:**
+
+- `from sklearn.model_selection import train_test_split` – Imports the dataset splitting function.
+- `train_test_split` – Divides the dataset into training and testing portions.
+
+**Line 5:**
+
+- `from sklearn.preprocessing import StandardScaler` – Imports StandardScaler.
+- `StandardScaler` – Standardizes the input features.
+
+**Line 6:**
+
+- `from sklearn.neighbors import KNeighborsClassifier` – Imports the KNN classification algorithm.
+- `KNeighborsClassifier` – Classifies data based on the nearest neighboring data points.
+
+**Line 7:**
+
+- `from sklearn.metrics import accuracy_score, confusion_matrix, classification_report` – Imports evaluation metrics.
+- `accuracy_score` – Calculates model accuracy.
+- `confusion_matrix` – Displays correct and incorrect predictions.
+- `classification_report` – Displays precision, recall and F1-score.
+
+## **Step 2: Load Iris dataset**
+
+```
+iris = load_iris()X = iris.datay = iris.target
+```
+
+**Line 1:**
+
+- `iris` – Variable that stores the Iris dataset.
+- `load_iris()` – Loads the Iris flower dataset.
+
+**Line 2:**
+
+- `X` – Variable that stores the input features.
+- `iris.data` – Extracts the four flower measurements:
+  1. Sepal length
+  2. Sepal width
+  3. Petal length
+  4. Petal width
+
+**Line 3:**
+
+- `y` – Variable that stores the target labels.
+- `iris.target` – Extracts the flower class labels.
+- There are three classes: 0, 1 and 2.
+
+The dataset contains 150 samples and 4 input features.
+
+## **Step 3: Split dataset**
+
+```
+X_train, X_test, y_train, y_test = train_test_split(    X, y, test_size=0.2, random_state=42)
+```
+
+**Line-by-line explanation:**
+
+- `train_test_split()` – Divides the dataset into training and testing data.
+- `X` – Original input features.
+- `y` – Original target labels.
+- `X_train` – Stores input features for training.
+- `X_test` – Stores input features for testing.
+- `y_train` – Stores actual labels for training.
+- `y_test` – Stores actual labels for testing.
+- `test_size=0.2` – Allocates 20% data for testing and 80% for training.
+- `random_state=42` – Ensures the same random split every time the code runs.
+
+**Dataset division:**
+
+- Total samples = 150
+- Training samples = 120
+- Testing samples = 30
+
+## **Step 4: Standardize the data**
+
+```
+scaler = StandardScaler()X_train = scaler.fit_transform(X_train)X_test = scaler.transform(X_test)
+```
+
+**Line 1:**
+
+- `scaler` – Variable that stores the StandardScaler object.
+- `StandardScaler()` – Creates an object for standardizing the data.
+
+**Line 2:**
+
+- `X_train` – Stores the standardized training data.
+- `fit_transform()` – Calculates the mean and standard deviation from training data and transforms it.
+- `X_train` – Original training dataset given as input.
+
+**Line 3:**
+
+- `X_test` – Stores the standardized testing data.
+- `transform()` – Applies the same scaling values learned from training data.
+- `X_test` – Original testing dataset given as input.
+
+**Important:** We use `fit_transform()` on training data and only `transform()` on testing data to avoid data leakage.
+
+## **Step 5: Create KNN classifier**
+
+```
+knn = KNeighborsClassifier(n_neighbors=3)
+```
+
+- `knn` – Variable that stores the KNN classifier object.
+- `KNeighborsClassifier()` – Creates a K-Nearest Neighbors classification model.
+- `n_neighbors=3` – Specifies that the algorithm considers the three nearest neighbors when classifying a new data point.
+
+**Important concept:**
+
+KNN classifies a new data point based on the majority class among its K nearest neighbors.
+
+For example:
+
+If the three nearest neighbors belong to:
+
+- Class 0
+- Class 0
+- Class 1
+
+The predicted class will be Class 0 because it has the majority vote.
+
+[K-Nearest Neighbors (KNN): A Distance-Based Approach to Prediction | by vishwagna chary sriramoju | Dec, 2025 | Medium](https://images.openai.com/static-rsc-4/E804l5S_GpYalAxuwRFbX8ZFJjWgTRbIuUuZim6a5tM09AKHI_1AJma7LTWVd0yDEECOC31aCl-H2y8QfZrkPbBBbN6nblzYNAf4Vdkh3r3XmtwZhRKFx4YQzsAv_NGmLoyAHmPq717lg7yEgcjVBZle3ge8UCUmsoWkHaovAVU?purpose=inline)
+
+[medium.com](https://medium.com/%40vishwagnachary25/k-nearest-neighbors-knn-a-distance-based-approach-to-prediction-669927611232?utm_source=chatgpt.com)
+
+## **Step 6: Train the model**
+
+```
+knn.fit(X_train, y_train)
+```
+
+- `knn` – Refers to the KNN classifier.
+- `fit()` – Trains the model using the training dataset.
+- `X_train` – Training input features.
+- `y_train` – Actual training labels.
+
+The algorithm stores the training samples so that it can find the nearest neighbors during prediction.
+
+## **Step 7: Make predictions**
+
+```
+y_pred = knn.predict(X_test)
+```
+
+- `y_pred` – Variable that stores predicted class labels.
+- `knn.predict()` – Predicts the class of the testing samples.
+- `X_test` – Testing input features given to the trained model.
+
+The model predicts the flower class using the three nearest neighbors.
+
+## **Step 8: Calculate accuracy**
+
+```
+accuracy = accuracy_score(y_test, y_pred)print("Accuracy:", accuracy * 100, "%")
+```
+
+**Line 1:**
+
+- `accuracy` – Variable that stores the model accuracy.
+- `accuracy_score()` – Calculates the accuracy of the classifier.
+- `y_test` – Actual class labels.
+- `y_pred` – Predicted class labels.
+
+**Line 2:**
+
+- `print()` – Displays the output.
+- `"Accuracy:"` – Displays the heading.
+- `accuracy * 100` – Converts accuracy from decimal form into percentage.
+- `"%"` – Displays the percentage symbol.
+
+**Expected output:**
+
+```
+Accuracy: 96.66666666666667 %
+```
+
+**Output explanation:**
+
+- Total testing samples = 30.
+- Correct predictions = 29.
+- Incorrect predictions = 1.
+- Accuracy = 96.67%.
+
+The model correctly classifies approximately 96.67% of the testing samples.
+
+## **Step 9: Display confusion matrix**
+
+```
+cm = confusion_matrix(y_test, y_pred)print("\nConfusion Matrix:")print(cm)
+```
+
+**Line 1:**
+
+- `cm` – Variable that stores the confusion matrix.
+- `confusion_matrix()` – Compares actual and predicted class labels.
+- `y_test` – Actual labels.
+- `y_pred` – Predicted labels.
+
+**Line 2:**
+
+- `print()` – Displays the output.
+- `\n` – Adds a new line.
+- `"Confusion Matrix:"` – Displays the heading.
+
+**Line 3:**
+
+\- `print(cm)` – Displays the confusion matrix.
+
+**Expected output:**
+
+```
+Confusion Matrix:
+[[10  0  0]
+ [ 0  9  0]
+ [ 0  1 10]]
+```
+
+**Output explanation:**
+
+| Actual / Predicted | Setosa (0) | Versicolor (1) | Virginica (2) |
+| ------------------ | ---------- | -------------- | ------------- |
+| Setosa (0)         | 10         | 0              | 0             |
+| Versicolor (1)     | 0          | 9              | 0             |
+| Virginica (2)      | 0          | 1              | 10            |
+
+- Rows represent actual classes.
+- Columns represent predicted classes.
+- Diagonal values represent correct predictions.
+- Values outside the diagonal represent incorrect predictions.
+
+For example:
+
+- 10 Setosa flowers are correctly classified.
+- 9 Versicolor flowers are correctly classified.
+- 10 Virginica flowers are correctly classified.
+- 1 Virginica flower is incorrectly classified as Versicolor.
+
+## **Step 10: Display classification report**
+
+```
+print("\nClassification Report:")print(classification_report(y_test, y_pred))
+```
+
+**Line 1:**
+
+- `print()` – Displays the output.
+- `\n` – Adds a new line.
+- `"Classification Report:"` – Displays the heading.
+
+**Line 2:**
+
+- `classification_report()` – Generates a classification performance report.
+- `y_test` – Actual class labels.
+- `y_pred` – Predicted class labels.
+
+**Output explanation:**
+
+The classification report contains four important measurements:
+
+| Metric    | Meaning                                                    |
+| --------- | ---------------------------------------------------------- |
+| Precision | How many predicted positive samples are actually correct.  |
+| Recall    | How many actual positive samples are correctly identified. |
+| F1-score  | Harmonic mean of precision and recall.                     |
+| Support   | Number of actual samples in each class.                    |
+
+**Important:** A higher precision, recall and F1-score generally indicate better classification performance.
+
+## **Step 11: Visualize confusion matrix**
+
+```
+plt.figure(figsize=(6, 4))plt.imshow(cm, cmap='Blues')plt.colorbar()plt.xlabel("Predicted Class")plt.ylabel("Actual Class")plt.title("KNN Confusion Matrix")plt.xticks([0, 1, 2], iris.target_names)plt.yticks([0, 1, 2], iris.target_names)for i in range(3):    for j in range(3):        plt.text(j, i, cm[i, j], ha='center', va='center')plt.show()
+```
+
+**Line 1:**
+
+- `plt.figure()` – Creates a new figure for visualization.
+- `figsize=(6, 4)` – Sets graph width to 6 inches and height to 4 inches.
+
+**Line 2:**
+
+- `plt.imshow()` – Displays the confusion matrix as an image.
+- `cm` – Contains the confusion matrix values.
+- `cmap='Blues'` – Applies a blue color scheme to the matrix.
+
+**Line 3:**
+
+\- `plt.colorbar()` – Displays a color bar representing the values and their corresponding shades.
+
+**Line 4:**
+
+- `plt.xlabel()` – Sets the X-axis label.
+- `"Predicted Class"` – Represents the predicted flower classes.
+
+**Line 5:**
+
+- `plt.ylabel()` – Sets the Y-axis label.
+- `"Actual Class"` – Represents the actual flower classes.
+
+**Line 6:**
+
+- `plt.title()` – Sets the graph title.
+- `"KNN Confusion Matrix"` – Displays the title of the visualization.
+
+**Line 7:**
+
+- `plt.xticks()` – Sets the labels on the X-axis.
+- `[0, 1, 2]` – Represents the three class positions.
+- `iris.target_names` – Displays the flower names: setosa, versicolor and virginica.
+
+**Line 8:**
+
+- `plt.yticks()` – Sets the labels on the Y-axis.
+- `[0, 1, 2]` – Represents the three class positions.
+- `iris.target_names` – Displays the three flower class names.
+
+**Line 9:**
+
+- `for i in range(3):` – Starts the outer loop.
+- `i` – Represents the row index.
+- `range(3)` – Generates values 0, 1 and 2.
+
+**Line 10:**
+
+- `for j in range(3):` – Starts the inner loop.
+- `j` – Represents the column index.
+- This loop accesses all nine cells of the confusion matrix.
+
+**Line 11:**
+
+- `plt.text()` – Displays numerical values inside the graph.
+- `j` – Represents the horizontal position.
+- `i` – Represents the vertical position.
+- `cm[i, j]` – Retrieves the confusion matrix value at the specified row and column.
+- `ha='center'` – Aligns the text horizontally in the center.
+- `va='center'` – Aligns the text vertically in the center.
+
+**Line 12:**
+
+\- `plt.show()` – Displays the final confusion matrix graph.
+
+**Graph output explanation:**
+
+[Iris Flower Classification using K-Nearest Neighbors Algorithm | Medium](https://images.openai.com/static-rsc-4/2N6kI4o3qXlfvxqpcCqCoJOIli5QVD4bmyR0rQvMjwN0t4vxyyLMIPJhahxqy-8fR4gSmI_9zxnru5mXXkrF0LppT3WHnmaDFLLJ3w9OLqWkODkSRW02MNkXWRMaXWkX81mkpnRUa5cHvdF1XusQsI2wJvZiRpU6wQtF4R8X-OI?purpose=inline)
+
+[medium.com](https://medium.com/%40dehghani.fateme1378/iris-flower-classification-using-k-nearest-neighbors-algorithm-18df2bc7bbbf?utm_source=chatgpt.com)
+
+- The graph represents the classification results using a confusion matrix.
+- X-axis shows predicted classes.
+- Y-axis shows actual classes.
+- Each cell displays the number of predictions.
+- Darker shades represent higher values.
+- Diagonal cells show correct classifications.
+- Off-diagonal cells show incorrect classifications.

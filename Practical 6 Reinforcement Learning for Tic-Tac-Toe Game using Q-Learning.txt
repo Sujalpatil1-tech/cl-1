@@ -1,0 +1,743 @@
+Practical 6 Reinforcement Learning for Tic-Tac-Toe Game using Q-Learning
+
+CODE:
+
+
+
+# Step 1: Import libraries
+import numpy as np
+import random
+
+# Step 2: Initialize Q-table
+Q = {}
+
+alpha = 0.1
+gamma = 0.9
+epsilon = 0.1
+
+# Step 3: Check winning condition
+def check_winner(board, player):
+    win_positions = [
+        (0, 1, 2), (3, 4, 5), (6, 7, 8),
+        (0, 3, 6), (1, 4, 7), (2, 5, 8),
+        (0, 4, 8), (2, 4, 6)
+    ]
+
+    for a, b, c in win_positions:
+        if board[a] == board[b] == board[c] == player:
+            return True
+
+    return False
+
+# Step 4: Get available actions
+def available_actions(board):
+    return [i for i in range(9) if board[i] == ' ']
+
+# Step 5: Get Q-values for a state
+def get_q(state):
+    if state not in Q:
+        Q[state] = np.zeros(9)
+    return Q[state]
+
+# Step 6: Select action using epsilon-greedy policy
+def choose_action(board, training=False):
+    state = ''.join(board)
+    actions = available_actions(board)
+
+    if training and random.random() < epsilon:
+        return random.choice(actions)
+
+    q_values = get_q(state)
+    return max(actions, key=lambda a: q_values[a])
+
+# Step 7: Train the Q-learning agent
+for episode in range(20000):
+
+    board = [' '] * 9
+
+    while True:
+        state = ''.join(board)
+
+        # Agent X selects a move
+        action = choose_action(board, training=True)
+        board[action] = 'X'
+
+        # Check if X wins
+        if check_winner(board, 'X'):
+            reward = 1
+            done = True
+
+        elif not available_actions(board):
+            reward = 0
+            done = True
+
+        else:
+            done = False
+            reward = 0
+
+            # Random opponent O makes a move
+            opponent_action = random.choice(available_actions(board))
+            board[opponent_action] = 'O'
+
+            # Check if O wins
+            if check_winner(board, 'O'):
+                reward = -1
+                done = True
+
+            elif not available_actions(board):
+                reward = 0
+                done = True
+
+        # Step 8: Update Q-value
+        if done:
+            target = reward
+        else:
+            next_state = ''.join(board)
+            next_actions = available_actions(board)
+            target = reward + gamma * max(
+                get_q(next_state)[a] for a in next_actions
+            )
+
+        Q[state][action] += alpha * (target - Q[state][action])
+
+        if done:
+            break
+
+print("Training completed!")
+print("Total training games: 20000")
+
+# Step 9: Display game board
+def display_board(board):
+    print()
+    for i in range(0, 9, 3):
+        print(" | ".join(
+            board[j] if board[j] != ' ' else str(j + 1)
+            for j in range(i, i + 3)
+        ))
+        if i < 6:
+            print("---------")
+    print()
+
+# Step 10: Play against the trained agent
+board = [' '] * 9
+
+print("\nYou are O. Computer is X.")
+print("Enter positions from 1 to 9.")
+
+while True:
+
+    # Computer move
+    action = choose_action(board)
+    board[action] = 'X'
+
+    print("\nComputer's move:")
+    display_board(board)
+
+    if check_winner(board, 'X'):
+        print("Computer wins!")
+        break
+
+    if not available_actions(board):
+        print("Game Draw!")
+        break
+
+    # Human move
+    while True:
+        try:
+            move = int(input("Enter your move (1-9): ")) - 1
+
+            if move in available_actions(board):
+                board[move] = 'O'
+                break
+            else:
+                print("Invalid position! Try again.")
+
+        except ValueError:
+            print("Please enter a number from 1 to 9.")
+
+    display_board(board)
+
+    if check_winner(board, 'O'):
+        print("You win!")
+        break
+
+    if not available_actions(board):
+        print("Game Draw!")
+        break
+
+
+
+
+
+
+
+
+## **1. Aim**
+
+To implement Reinforcement Learning using the Q-Learning algorithm to train an agent to play the Tic-Tac-Toe game by learning from rewards and penalties.
+
+## **2. Theory**
+
+**Reinforcement Learning (RL)** is a type of machine learning in which an agent learns to make decisions by interacting with an environment and receiving rewards or penalties for its actions.
+
+The main objective of Reinforcement Learning is to learn the best actions that maximize the total cumulative reward over time.
+
+In this practical, the Q-Learning algorithm is used to train an agent to play Tic-Tac-Toe. The agent learns by playing the game, observing the results of its moves and improving its decisions through repeated experiences.
+
+### **Important Components of Reinforcement Learning**
+
+1. **Agent:** The learner or decision-maker. In this practical, the agent is the Tic-Tac-Toe player being trained.
+2. **Environment:** The surroundings in which the agent operates. Here, it is the Tic-Tac-Toe game.
+3. **State:** The current situation of the environment. Here, it represents the current arrangement of X and O on the board.
+4. **Action:** A decision taken by the agent. Here, selecting an empty cell to place its symbol.
+5. **Reward:** Feedback received after performing an action. Winning may give a positive reward, while losing may give a negative reward.
+6. **Policy:** A strategy followed by the agent to select actions.
+7. **Q-Value:** The expected future reward for taking a particular action in a particular state.
+
+### **What is Q-Learning?**
+
+**Q-Learning** is a model-free, value-based Reinforcement Learning algorithm that learns the best action to take in a particular state by updating Q-values based on rewards and future expected rewards.
+
+It uses a Q-Table to store the estimated value of state-action pairs.
+
+### **Q-Learning Formula**
+
+\\[ Q(s,a)\leftarrow Q(s,a)+ \alpha[r+\gamma\max\_{a'}Q(s',a')-Q(s,a)] \\]
+
+Where:
+
+- \\(Q(s,a)\\) = Current Q-value
+- \\(s\\) = Current state
+- \\(a\\) = Current action
+- \\(\alpha\\) = Learning rate
+- \\(r\\) = Immediate reward
+- \\(\gamma\\) = Discount factor
+- \\(s'\\) = Next state
+- \\(\max Q(s',a')\\) = Maximum expected future Q-value
+
+### **Explanation of Q-Learning Parameters**
+
+| Parameter           | Meaning                                               |
+| ------------------- | ----------------------------------------------------- |
+| Learning Rate (α)   | Controls how much new information updates the Q-value |
+| Discount Factor (γ) | Determines the importance of future rewards           |
+| Reward (r)          | Feedback received after an action                     |
+| Q-Value             | Estimated value of an action in a state               |
+| Exploration         | Trying different actions to learn                     |
+| Exploitation        | Choosing the best-known action                        |
+
+### **Working of Q-Learning in Tic-Tac-Toe**
+
+[In a Reinforcement Learning agent’s shoes | FAIAS](https://images.openai.com/static-rsc-4/aoEC4AzzeLz_VO7_4gQ_xnoD6RhV7UxCrVHTawGWcmUZCkLD53KpGiF1iYvN9fnVuctdcNudNuvNKe6GoaXMjLs3DO1DNgmLXHqiJxI7l_1SFt9xC1-wXvBn2b8QxZJakKhmBkie3zsF-bfn3pKcNAgaDxS3a8Ol9Likv79YIl4?purpose=inline)
+
+[fosteringai.github.io](https://fosteringai.github.io/post/reinforcement_learning/?utm_source=chatgpt.com)
+
+1. **Initialize Q-Table:** Initially, Q-values for state-action pairs are set to zero or another initial value.
+2. **Observe State:** The agent observes the current Tic-Tac-Toe board.
+3. **Choose Action:** The agent selects an empty cell using an exploration or exploitation strategy.
+4. **Perform Action:** The agent places its symbol in the selected cell.
+5. **Receive Reward:** The agent receives feedback based on the result of the game.
+6. **Update Q-Value:** The Q-Learning formula updates the value of the selected action.
+7. **Repeat Training:** The agent plays multiple games and continuously improves its decisions.
+8. **Learn Best Policy:** After sufficient training, the agent uses learned Q-values to select better moves.
+
+### **Reward System Example**
+
+A possible reward system is:
+
+| Game Result  | Reward |
+| ------------ | ------ |
+| Agent wins   | +10    |
+| Agent loses  | -10    |
+| Draw         | +1     |
+| Invalid move | -5     |
+
+The exact reward values depend on the implementation. Some programs use a reward of zero for intermediate moves.
+
+### **Exploration vs Exploitation**
+
+- **Exploration:** The agent tries random actions to discover new possibilities.
+- **Exploitation:** The agent selects the action with the highest known Q-value.
+
+The epsilon-greedy strategy balances these two approaches.
+
+## **3. Working / Steps**
+
+1. **Import Libraries:** Import the required Python libraries such as NumPy and Random.
+2. **Create Game Environment:** Develop the Tic-Tac-Toe board using a 3 × 3 structure.
+3. **Define Game Rules:** Implement the rules for valid moves, winning conditions and draw conditions.
+4. **Initialize Q-Table:** Create a Q-Table to store Q-values for different states and actions.
+5. **Define Parameters:** Set learning rate, discount factor and exploration rate.
+6. **Select Action:** Use the epsilon-greedy strategy to choose an action.
+7. **Perform Action:** Place the agent's symbol in an available cell.
+8. **Calculate Reward:** Give rewards or penalties according to the game result.
+9. **Update Q-Values:** Apply the Q-Learning update equation.
+10. **Train Agent:** Repeat the process for multiple games or episodes.
+11. **Test Agent:** Test the trained agent by playing Tic-Tac-Toe.
+12. **Display Results:** Observe the agent's decisions and evaluate its performance.
+
+## **4. Important Concepts**
+
+| Concept                | Meaning                                     |
+| ---------------------- | ------------------------------------------- |
+| Reinforcement Learning | Learning through interaction and feedback   |
+| Agent                  | Learner or decision-maker                   |
+| Environment            | Surroundings in which the agent operates    |
+| State                  | Current situation of the game               |
+| Action                 | Move performed by the agent                 |
+| Reward                 | Feedback for an action                      |
+| Q-Learning             | Algorithm that learns state-action values   |
+| Q-Table                | Stores Q-values                             |
+| Episode                | One complete game or learning sequence      |
+| Learning Rate          | Controls the amount of Q-value update       |
+| Discount Factor        | Determines the importance of future rewards |
+| Epsilon-Greedy         | Balances exploration and exploitation       |
+| Policy                 | Strategy used to select actions             |
+
+## **5. Advantages**
+
+1. Does not require a predefined model of the environment.
+2. Learns through repeated interactions.
+3. Improves decisions using rewards and penalties.
+4. Can learn optimal or near-optimal strategies.
+5. Balances exploration and exploitation.
+6. Can be applied to different decision-making problems.
+
+## **6. Applications**
+
+1. Game-playing agents.
+2. Robotics and automation.
+3. Self-driving vehicles.
+4. Traffic signal optimization.
+5. Resource allocation.
+6. Recommendation systems.
+7. Industrial process optimization.
+
+## **7. Libraries Used**
+
+| Library    | Purpose                                       |
+| ---------- | --------------------------------------------- |
+| NumPy      | Numerical operations and Q-Table handling     |
+| Random     | Random action selection                       |
+| Matplotlib | Visualizing training performance, if required |
+| Python     | Implementing game rules and Q-Learning logic  |
+
+## **8. Conclusion**
+
+In this practical, Reinforcement Learning was implemented using the Q-Learning algorithm for the Tic-Tac-Toe game. The agent learned through interaction with the game environment by observing states, performing actions and receiving rewards or penalties. Q-values were updated repeatedly to improve decision-making. This practical demonstrated how an intelligent agent can learn a strategy through experience.
+
+## **9. Viva Questions with Answers**
+
+**Q1. What is Reinforcement Learning?**
+
+Reinforcement Learning is a machine learning technique in which an agent learns by interacting with an environment and receiving rewards or penalties.
+
+**Q2. What is Q-Learning?**
+
+Q-Learning is a model-free Reinforcement Learning algorithm that learns the best actions using Q-values.
+
+**Q3. What is an Agent?**
+
+An agent is a learner or decision-maker that interacts with an environment.
+
+**Q4. What is an Environment?**
+
+An environment is the system or surroundings in which the agent performs actions.
+
+**Q5. What is a State?**
+
+A state represents the current situation of the environment.
+
+**Q6. What is an Action?**
+
+An action is a decision or move performed by the agent.
+
+**Q7. What is a Reward?**
+
+A reward is feedback received by an agent after performing an action.
+
+**Q8. What is a Q-Table?**
+
+A Q-Table stores the estimated values of different state-action pairs.
+
+**Q9. What is the learning rate in Q-Learning?**
+
+The learning rate controls how much new information affects the existing Q-value.
+
+**Q10. What is the discount factor?**
+
+The discount factor determines the importance of future rewards compared with immediate rewards.
+
+**Q11. What is an Episode?**
+
+An episode is one complete sequence of interaction, such as one complete Tic-Tac-Toe game.
+
+**Q12. What is Exploration?**
+
+Exploration means trying different actions to discover better strategies.
+
+**Q13. What is Exploitation?**
+
+Exploitation means selecting the best-known action based on existing Q-values.
+
+**Q14. What is the Epsilon-Greedy Strategy?**
+
+It is an action-selection strategy that uses epsilon to decide between random exploration and choosing the best-known action.
+
+**Q15. What are the applications of Q-Learning?**
+
+Game playing, robotics, traffic optimization, resource allocation and autonomous systems.
+
+
+
+
+code expplaination:
+
+
+## **Step 1: Import libraries**
+
+```
+import numpy as npimport random
+```
+
+- `numpy`: Used for numerical operations and creating the Q-table values.
+- `random`: Used to generate random moves and implement exploration.
+
+## **Step 2: Initialize Q-table**
+
+```
+Q = {}alpha = 0.1gamma = 0.9epsilon = 0.1
+```
+
+- `Q = {}` creates an empty dictionary to store Q-values.
+- A Q-value represents the expected future reward for taking an action in a particular state.
+- `alpha = 0.1` is the learning rate. It controls how quickly the agent learns from new information.
+- `gamma = 0.9` is the discount factor. It determines the importance of future rewards.
+- `epsilon = 0.1` is the exploration rate. It gives the agent a 10% chance of selecting a random move during training.
+
+## **Step 3: Check winning condition**
+
+```
+def check_winner(board, player):    win_positions = [        (0, 1, 2), (3, 4, 5), (6, 7, 8),        (0, 3, 6), (1, 4, 7), (2, 5, 8),        (0, 4, 8), (2, 4, 6)    ]    for a, b, c in win_positions:        if board[a] == board[b] == board[c] == player:            return True    return False
+```
+
+- `def check_winner(board, player):` defines a function to check whether a player has won.
+- `board` represents the nine positions of the Tic-Tac-Toe game.
+- `player` represents the player symbol, either `X` or `O`.
+- `win_positions` stores all eight possible winning combinations:
+  - First three combinations: Horizontal rows.
+  - Next three combinations: Vertical columns.
+  - Last two combinations: Diagonal positions.
+- `for a, b, c in win_positions:` checks each winning combination.
+- `board[a] == board[b] == board[c] == player` checks whether all three positions contain the same player's symbol.
+- `return True` indicates that the player has won.
+- `return False` indicates that no winning combination exists.
+
+## **Step 4: Get available actions**
+
+```
+def available_actions(board):    return [i for i in range(9) if board[i] == ' ']
+```
+
+- `available_actions()` defines a function to find empty positions.
+- `range(9)` generates positions from 0 to 8.
+- `if board[i] == ' '` checks whether a position is empty.
+- `return` provides a list of all available positions.
+
+For example, if positions 0, 1 and 2 are occupied, the function returns:
+
+```
+[3, 4, 5, 6, 7, 8]
+```
+
+## **Step 5: Get Q-values for a state**
+
+```
+def get_q(state):    if state not in Q:        Q[state] = np.zeros(9)    return Q[state]
+```
+
+- `get_q(state)` defines a function to retrieve Q-values for a particular game state.
+- `state` represents the current board configuration.
+- `if state not in Q:` checks whether the state already exists in the Q-table.
+- `np.zeros(9)` creates an array containing nine zeros, one for each possible board position.
+- `Q[state]` stores these values in the Q-table.
+- `return Q[state]` returns the Q-values for that state.
+
+## **Step 6: Select action using epsilon-greedy policy**
+
+```
+def choose_action(board, training=False):    state = ''.join(board)    actions = available_actions(board)    if training and random.random() < epsilon:        return random.choice(actions)    q_values = get_q(state)    return max(actions, key=lambda a: q_values[a])
+```
+
+- `choose_action()` defines a function to select the agent's next move.
+- `training=False` indicates that the agent is not training by default.
+- `state = ''.join(board)` converts the board list into a string.
+- `available_actions(board)` finds all empty positions.
+- `if training and random.random() < epsilon:` checks whether the agent should explore.
+- `random.random()` generates a random decimal between 0 and 1.
+- `random.choice(actions)` selects a random available position.
+- `q_values = get_q(state)` retrieves the Q-values of the current state.
+- `max()` selects the action with the highest Q-value.
+- `key=lambda a: q_values[a]` tells `max()` to compare actions using their Q-values.
+
+**Important:** This is called the epsilon-greedy policy. It balances exploration (trying random moves) and exploitation (choosing the best-known move).
+
+## **Step 7: Train the Q-learning agent**
+
+```
+for episode in range(20000):    board = [' '] * 9    while True:        state = ''.join(board)
+```
+
+- `range(20000)` runs the training process for 20,000 games.
+- Each game is called an episode.
+- `board = [' '] * 9` creates a new empty Tic-Tac-Toe board.
+- `while True` continues the game until a winning or draw condition occurs.
+- `state = ''.join(board)` stores the current board configuration as a string.
+
+**Agent X selects a move**
+
+```
+action = choose_action(board, training=True)board[action] = 'X'
+```
+
+- `choose_action()` selects a move using the epsilon-greedy policy.
+- `training=True` enables exploration.
+- `action` stores the selected position.
+- `board[action] = 'X'` places the computer's symbol X at that position.
+
+**Check if X wins**
+
+```
+if check_winner(board, 'X'):    reward = 1    done = True
+```
+
+- `check_winner()` checks whether X has won.
+- `reward = 1` gives a positive reward for winning.
+- `done = True` indicates that the game is finished.
+
+**Check if the board is full**
+
+```
+elif not available_actions(board):    reward = 0    done = True
+```
+
+- Checks whether there are no empty positions remaining.
+- `reward = 0` gives zero reward for a draw.
+- `done = True` ends the game.
+
+**If the game continues**
+
+```
+else:    done = False    reward = 0
+```
+
+- `done = False` means the game is not finished.
+- `reward = 0` initializes the reward before the opponent's move.
+
+**Random opponent O makes a move**
+
+```
+opponent_action = random.choice(available_actions(board))board[opponent_action] = 'O'
+```
+
+- `available_actions(board)` finds the empty positions.
+- `random.choice()` selects one available position randomly.
+- `opponent_action` stores the selected position.
+- `board[opponent_action] = 'O'` places the opponent's symbol O on the board.
+
+**Check if O wins**
+
+```
+if check_winner(board, 'O'):    reward = -1    done = True
+```
+
+- Checks whether opponent O has won.
+- `reward = -1` gives a negative reward to the agent because it lost.
+- `done = True` ends the game.
+
+```
+elif not available_actions(board):    reward = 0    done = True
+```
+
+- Checks whether the board is full after the opponent's move.
+- `reward = 0` represents a draw.
+- `done = True` ends the game.
+
+## **Step 8: Update Q-value**
+
+```
+if done:    target = rewardelse:    next_state = ''.join(board)    next_actions = available_actions(board)    target = reward + gamma * max(        get_q(next_state)[a] for a in next_actions    )
+```
+
+- `if done:` checks whether the game has finished.
+- `target = reward` uses the final reward when the game is over.
+- `next_state` stores the new board configuration.
+- `next_actions` stores all available actions in the next state.
+- `get_q(next_state)` retrieves the Q-values of the next state.
+- `max()` selects the highest future Q-value.
+- `gamma` discounts the future reward.
+- `target` stores the new target value used for learning.
+
+**Update the Q-table**
+
+```
+Q[state][action] += alpha * (target - Q[state][action])
+```
+
+This is the Q-learning update formula:
+
+\\[ Q(s,a) \leftarrow Q(s,a)+\alpha[target-Q(s,a)] \\]
+
+- `Q[state][action]` represents the current Q-value.
+- `alpha` is the learning rate.
+- `target` is the new estimated value.
+- `(target - Q[state][action])` calculates the difference between the target and current Q-value.
+- The formula updates the Q-value based on the new experience.
+
+**End the game**
+
+```
+if done:    break
+```
+
+- Checks whether the game is finished.
+- `break` exits the `while` loop and starts the next training episode.
+
+**Display training completion**
+
+```
+print("Training completed!")print("Total training games: 20000")
+```
+
+- Displays a message after all 20,000 training games are completed.
+- Shows the total number of training episodes.
+
+## **Step 9: Display game board**
+
+```
+def display_board(board):    print()    for i in range(0, 9, 3):        print(" | ".join(            board[j] if board[j] != ' ' else str(j + 1)            for j in range(i, i + 3)        ))        if i < 6:            print("---------")    print()
+```
+
+- `display_board(board)` defines a function to display the Tic-Tac-Toe board.
+- `print()` creates an empty line for better formatting.
+- `range(0, 9, 3)` generates `0, 3, 6`, representing the starting positions of the three rows.
+- `" | ".join()` joins the three positions of a row using vertical separators.
+- `board[j]` displays X or O if the position is occupied.
+- `board[j] != ' '` checks whether the position is occupied.
+- `str(j + 1)` displays the position number if the cell is empty.
+- `range(i, i + 3)` selects three positions for the current row.
+- `if i < 6` checks whether another row follows.
+- `print("---------")` displays a horizontal separator.
+- The final `print()` adds an empty line after the board.
+
+Example board:
+
+```
+X | 2 | O
+---------
+4 | X | 6
+---------
+O | 8 | X
+```
+
+## **Step 10: Play against the trained agent**
+
+**Initialize the game**
+
+```
+board = [' '] * 9print("\nYou are O. Computer is X.")print("Enter positions from 1 to 9.")
+```
+
+- Creates a new empty board.
+- The human player uses `O`.
+- The computer uses `X`.
+- Displays instructions to enter positions from 1 to 9.
+
+**Computer move**
+
+```
+while True:    action = choose_action(board)    board[action] = 'X'    print("\nComputer's move:")    display_board(board)
+```
+
+- `while True` starts the game loop.
+- `choose_action(board)` selects the computer's move.
+- Since `training=False` by default, the computer chooses the available action with the highest learned Q-value.
+- `board[action] = 'X'` places X on the board.
+- `display_board(board)` displays the updated board.
+
+**Check whether computer wins**
+
+```
+if check_winner(board, 'X'):    print("Computer wins!")    break
+```
+
+- Checks whether the computer has won.
+- Displays the winning message.
+- `break` ends the game loop.
+
+```
+if not available_actions(board):    print("Game Draw!")    break
+```
+
+- Checks whether the board is full.
+- Displays a draw message if no positions are available.
+- Ends the game.
+
+**Human move**
+
+```
+while True:    try:        move = int(input("Enter your move (1-9): ")) - 1
+```
+
+- The inner `while True` allows the user to retry an invalid move.
+- `input()` accepts the user's position.
+- `int()` converts the entered value into an integer.
+- `- 1` converts the user's position (1–9) into the Python index (0–8).
+
+```
+if move in available_actions(board):    board[move] = 'O'    breakelse:    print("Invalid position! Try again.")
+```
+
+- Checks whether the entered position is available.
+- If valid, places O on the board.
+- `break` exits the inner loop after a valid move.
+- Otherwise, displays an invalid-position message.
+
+**Handle invalid input**
+
+```
+except ValueError:    print("Please enter a number from 1 to 9.")
+```
+
+- `try-except` handles input errors.
+- `ValueError` occurs when the user enters something that cannot be converted into an integer, such as a letter.
+- Displays an error message instead of stopping the program.
+
+**Display board after human move**
+
+```
+display_board(board)
+```
+
+\- Displays the board after the human player places O.
+
+**Check whether human wins**
+
+```
+if check_winner(board, 'O'):    print("You win!")    break
+```
+
+- Checks whether the human player has won.
+- Displays the winning message.
+- Ends the game.
+
+**Check for draw**
+
+```
+if not available_actions(board):    print("Game Draw!")    break
+```
+
+- Checks whether all nine positions are occupied.
+- If no moves remain, declares a draw and ends the game.
+
+**Important implementation note:** This code trains X against a random O opponent, then plays against a human. It is a basic Q-learning demonstration, not a guaranteed unbeatable Tic-Tac-Toe agent. Also, the Q-table update uses the state before X's move and the board after O's move as the next state, so it is a simplified learning implementation rather than a fully turn-aware Q-learning design.

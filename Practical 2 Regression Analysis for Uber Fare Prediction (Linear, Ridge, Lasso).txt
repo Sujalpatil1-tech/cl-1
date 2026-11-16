@@ -1,0 +1,692 @@
+Practical 2 Regression Analysis for Uber Fare Prediction (Linear, Ridge, Lasso)
+
+CODE:
+
+
+
+
+# Step 1: Import required libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression, Ridge, Lasso
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+# Step 2: Create Uber fare dataset
+data = {
+    'distance': [2, 3, 5, 7, 4, 8, 10, 6, 12, 9,
+                 3, 11, 5, 14, 7, 15, 4, 13, 8, 16],
+    'passengers': [1, 2, 1, 2, 3, 1, 2, 1, 3, 2,
+                   1, 2, 2, 1, 3, 2, 1, 3, 2, 1],
+    'fare': [50, 65, 95, 125, 85, 140, 170, 110, 200, 155,
+             60, 185, 100, 230, 130, 245, 75, 220, 145, 260]
+}
+
+df = pd.DataFrame(data)
+
+# Step 3: Separate input and output
+X = df[['distance', 'passengers']]
+y = df['fare']
+
+# Step 4: Split dataset into training and testing
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Step 5: Create regression models
+models = {
+    'Linear Regression': LinearRegression(),
+    'Ridge Regression': make_pipeline(
+        StandardScaler(), Ridge(alpha=1.0)
+    ),
+    'Lasso Regression': make_pipeline(
+        StandardScaler(), Lasso(alpha=0.1)
+    )
+}
+
+# Step 6: Train and evaluate models
+for name, model in models.items():
+
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    print("\n", name)
+    print("MAE:", mean_absolute_error(y_test, y_pred))
+    print("MSE:", mean_squared_error(y_test, y_pred))
+    print("R2 Score:", r2_score(y_test, y_pred))
+
+# Step 7: Predict fare using Linear Regression
+linear_model = models['Linear Regression']
+
+distance = pd.DataFrame({
+    'distance': [10],
+    'passengers': [2]
+})
+
+predicted_fare = linear_model.predict(distance)
+
+print("\nPredicted Uber Fare:", predicted_fare[0])
+
+# Step 8: Visualize actual vs predicted fare
+plt.figure(figsize=(7, 5))
+
+plt.scatter(y_test, linear_model.predict(X_test))
+
+plt.xlabel("Actual Fare")
+plt.ylabel("Predicted Fare")
+plt.title("Uber Fare Prediction - Linear Regression")
+plt.show()
+
+
+
+
+
+
+theory:
+
+
+
+
+# **Practical 2: Regression Analysis for Uber Fare Prediction Using Linear, Ridge and Lasso Regression**
+
+## **1. Aim**
+
+To perform regression analysis for predicting Uber ride fares using Linear Regression, Ridge Regression, and Lasso Regression algorithms and compare their performance.
+
+## **2. Theory**
+
+**Regression** is a supervised machine learning technique used to predict continuous numerical values based on input features. It identifies the relationship between independent variables (input features) and a dependent variable (target).
+
+In this practical, regression algorithms are used to predict the fare of an Uber ride based on features such as:
+
+- Pickup location
+- Drop-off location
+- Distance travelled
+- Passenger count
+- Date and time of the ride
+
+The target variable is the **Uber fare amount**.
+
+Three regression algorithms are used:
+
+### **A. Linear Regression**
+
+Linear Regression is a supervised learning algorithm that predicts a continuous output by establishing a linear relationship between input variables and the target variable.
+
+The general equation is:
+
+\\[ y=b_0+b_1x_1+b_2x_2+\cdots+b_nx_n \\]
+
+Where:
+
+- \\(y\\) = Predicted fare
+- \\(b_0\\) = Intercept
+- \\(b_1,b_2,\ldots,b_n\\) = Model coefficients
+- \\(x_1,x_2,\ldots,x_n\\) = Input features
+
+**Working:**
+
+1. Takes input features from the dataset.
+2. Identifies the relationship between input features and fare.
+3. Calculates the best-fit line by minimizing prediction errors.
+4. Predicts the fare for new rides.
+
+### **B. Ridge Regression**
+
+Ridge Regression is a regularized version of Linear Regression. It uses **L2 regularization** to reduce the size of model coefficients and prevent overfitting.
+
+It adds a penalty term to the Linear Regression error function.
+
+\\[ Loss = RSS + \alpha\sum\_{j=1}^{n}b_j^2 \\]
+
+Where:
+
+- RSS = Residual Sum of Squares
+- \\(\alpha\\) = Regularization parameter
+- \\(b_j\\) = Model coefficients
+
+**Working:**
+
+1. Starts with a linear regression model.
+2. Adds an L2 penalty to the loss function.
+3. Shrinks large coefficient values.
+4. Reduces overfitting and improves model stability.
+
+**Important:** Ridge Regression reduces coefficient values but generally does not make them exactly zero.
+
+### **C. Lasso Regression**
+
+Lasso Regression is another regularized version of Linear Regression. It uses **L1 regularization** to reduce coefficient values and can make some coefficients exactly zero.
+
+\\[ Loss = RSS + \alpha\sum\_{j=1}^{n}|b_j| \\]
+
+Where:
+
+- RSS = Residual Sum of Squares
+- \\(\alpha\\) = Regularization parameter
+- \\(b_j\\) = Model coefficients
+
+**Working:**
+
+1. Starts with a linear regression model.
+2. Adds an L1 penalty to the loss function.
+3. Reduces unnecessary coefficient values.
+4. Can eliminate less important features by making their coefficients zero.
+
+**Important:** Lasso Regression performs automatic feature selection.
+
+## **3. Working / Steps**
+
+1\. **Import Libraries:** Import Pandas, NumPy, Matplotlib and Scikit-learn libraries.
+
+2\. **Load Dataset:** Load the Uber fare dataset using Pandas.
+
+3\. **Data Exploration:** Check dataset shape, columns, data types and statistical information.
+
+4\. **Data Cleaning:** Handle missing values, duplicate records and invalid fare values.
+
+5\. **Feature Selection:** Select relevant input features such as distance, pickup coordinates and passenger count.
+
+6\. **Feature Engineering:** If required, extract useful information such as hour, day or month from the pickup date and time.
+
+7\. **Define Variables:** Separate independent variables (X) and dependent variable (y), where y represents the fare amount.
+
+8\. **Train-Test Split:** Divide the dataset into training and testing sets using `train_test_split()`.
+
+9\. **Feature Scaling:** Apply standardization where appropriate, especially for Ridge and Lasso Regression.
+
+10\. **Model Training:** Train Linear Regression, Ridge Regression and Lasso Regression models.
+
+11\. **Prediction:** Use the trained models to predict Uber ride fares.
+
+12\. **Model Evaluation:** Compare model performance using MAE, MSE, RMSE and R² score.
+
+## **4. Important Concepts**
+
+| Concept               | Meaning                                                             |
+| --------------------- | ------------------------------------------------------------------- |
+| Regression            | Predicting continuous numerical values                              |
+| Independent variables | Input features used for prediction                                  |
+| Dependent variable    | Target variable to be predicted                                     |
+| Linear Regression     | Fits a linear relationship between inputs and output                |
+| Ridge Regression      | Uses L2 regularization                                              |
+| Lasso Regression      | Uses L1 regularization                                              |
+| Overfitting           | Model performs well on training data but poorly on unseen data      |
+| Regularization        | Technique used to control model complexity                          |
+| MAE                   | Mean Absolute Error                                                 |
+| MSE                   | Mean Squared Error                                                  |
+| RMSE                  | Root Mean Squared Error                                             |
+| R² Score              | Measures how much variation in the target is explained by the model |
+
+### **Model Evaluation Metrics**
+
+**1. Mean Absolute Error (MAE):**
+
+It calculates the average absolute difference between actual and predicted values.
+
+\\[ MAE=\frac{1}{n}\sum |y_i-\hat y_i| \\]
+
+**2. Mean Squared Error (MSE):**
+
+It calculates the average squared difference between actual and predicted values.
+
+\\[ MSE=\frac{1}{n}\sum(y_i-\hat y_i)^2 \\]
+
+**3. Root Mean Squared Error (RMSE):**
+
+It is the square root of MSE and measures prediction error in the target variable's original unit.
+
+\\[ RMSE=\sqrt{MSE} \\]
+
+**4. R² Score:**
+
+It measures how well the regression model explains the variation in the target variable.
+
+- Higher R² generally indicates a better fit.
+- Lower MAE, MSE and RMSE indicate better prediction accuracy.
+
+## **5. Advantages**
+
+1. Helps predict Uber ride fares accurately.
+2. Linear Regression is simple and easy to understand.
+3. Ridge Regression reduces overfitting.
+4. Lasso Regression performs feature selection.
+5. Model performance can be compared using evaluation metrics.
+6. Helps understand the relationship between ride features and fare amount.
+
+## **6. Applications**
+
+1. Uber and taxi fare prediction.
+2. House price prediction.
+3. Sales and revenue forecasting.
+4. Stock price trend estimation.
+5. Demand and cost prediction.
+6. Transportation cost estimation.
+
+## **7. Libraries Used**
+
+| Library             | Purpose                                      |
+| ------------------- | -------------------------------------------- |
+| Pandas              | Data loading and manipulation                |
+| NumPy               | Numerical calculations                       |
+| Matplotlib          | Data visualization                           |
+| Seaborn             | Statistical visualization                    |
+| Scikit-learn        | Machine learning model implementation        |
+| train_test_split    | Dividing data into training and testing sets |
+| LinearRegression    | Implementing Linear Regression               |
+| Ridge               | Implementing Ridge Regression                |
+| Lasso               | Implementing Lasso Regression                |
+| mean_absolute_error | Calculating MAE                              |
+| mean_squared_error  | Calculating MSE and RMSE                     |
+| r2_score            | Calculating R² score                         |
+
+## **8. Conclusion**
+
+In this practical, Uber fare prediction was studied using Linear Regression, Ridge Regression and Lasso Regression. The dataset was loaded, cleaned and divided into training and testing sets. All three models were trained to predict ride fares and evaluated using MAE, MSE, RMSE and R² score. This practical helped understand regression techniques and the importance of regularization in improving model performance.
+
+## **9. Viva Questions with Answers**
+
+**Q1. What is Regression?**
+
+Regression is a supervised machine learning technique used to predict continuous numerical values.
+
+**Q2. What is the main aim of this practical?**
+
+To predict Uber ride fares using Linear, Ridge and Lasso Regression.
+
+**Q3. What is the target variable in Uber fare prediction?**
+
+The fare amount of the Uber ride.
+
+**Q4. What is Linear Regression?**
+
+It is an algorithm that predicts numerical values by finding a linear relationship between input and output variables.
+
+**Q5. What is the equation of Linear Regression?**
+
+\\[ y=b_0+b_1x_1+\cdots+b_nx_n \\]
+
+**Q6. What is Ridge Regression?**
+
+Ridge Regression is a regularized linear regression technique that uses L2 regularization to reduce overfitting.
+
+**Q7. What is Lasso Regression?**
+
+Lasso Regression is a regularized linear regression technique that uses L1 regularization and performs feature selection.
+
+**Q8. What is the difference between Ridge and Lasso Regression?**
+
+Ridge uses L2 regularization and shrinks coefficients, while Lasso uses L1 regularization and can make some coefficients zero.
+
+**Q9. What is Regularization?**
+
+Regularization is a technique used to prevent overfitting by adding a penalty to the model's loss function.
+
+**Q10. What is Overfitting?**
+
+Overfitting occurs when a model performs well on training data but poorly on new, unseen data.
+
+**Q11. What is the purpose of train-test split?**
+
+It divides the dataset into training data for learning and testing data for evaluating model performance.
+
+**Q12. What is MAE?**
+
+Mean Absolute Error measures the average absolute difference between actual and predicted values.
+
+**Q13. What is MSE?**
+
+Mean Squared Error measures the average squared difference between actual and predicted values.
+
+**Q14. What is RMSE?**
+
+Root Mean Squared Error is the square root of MSE and represents prediction error in the target variable's original unit.
+
+**Q15. What is R² Score?**
+
+R² Score measures how much variation in the target variable is explained by the regression model. A higher value generally indicates a better fit.
+
+### **Quick Hinglish Understanding**
+
+- **Linear Regression:** Input features ke basis par fare predict karta hai.
+- **Ridge Regression:** Coefficients ko control karta hai taaki overfitting kam ho.
+- **Lasso Regression:** Unimportant features ke coefficients zero kar sakta hai.
+- **MAE/MSE/RMSE:** Prediction kitni galat hui, ye measure karte hain.
+- **R² Score:** Model data ko kitna explain kar raha hai, ye batata hai.
+
+**Remember the main difference:** Linear = Basic prediction, Ridge = L2 penalty, Lasso = L1 penalty + Feature Selection.
+
+
+
+
+
+
+code explaination :
+
+
+# **Practical 2: Regression Analysis for Uber Fare Prediction (Linear, Ridge, Lasso)**
+
+## **Step 1: Import required libraries**
+
+```
+import numpy as npimport pandas as pdimport matplotlib.pyplot as pltfrom sklearn.model_selection import train_test_splitfrom sklearn.linear_model import LinearRegression, Ridge, Lassofrom sklearn.preprocessing import StandardScalerfrom sklearn.pipeline import make_pipelinefrom sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+```
+
+**Line 1:**
+
+- `import numpy as np` – Imports the NumPy library.
+- `numpy` – Used for numerical and mathematical operations.
+- `np` – Short name (alias) for NumPy.
+
+**Line 2:**
+
+- `import pandas as pd` – Imports the Pandas library.
+- `pandas` – Used to create and manipulate datasets and tables.
+- `pd` – Short name (alias) for Pandas.
+
+**Line 3:**
+
+- `import matplotlib.pyplot as plt` – Imports the Pyplot module.
+- `plt` – Used to create graphs and visualizations.
+
+**Line 4:**
+
+- `from sklearn.model_selection import train_test_split` – Imports the dataset splitting function.
+- `train_test_split` – Divides the dataset into training and testing data.
+
+**Line 5:**
+
+- `from sklearn.linear_model import LinearRegression, Ridge, Lasso` – Imports three regression algorithms.
+- `LinearRegression` – Performs basic linear regression.
+- `Ridge` – Performs regression using L2 regularization.
+- `Lasso` – Performs regression using L1 regularization.
+
+**Line 6:**
+
+- `from sklearn.preprocessing import StandardScaler` – Imports StandardScaler.
+- `StandardScaler` – Standardizes the input features.
+
+**Line 7:**
+
+- `from sklearn.pipeline import make_pipeline` – Imports the pipeline function.
+- `make_pipeline` – Combines multiple processing steps into one workflow.
+
+**Line 8:**
+
+- `from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score` – Imports evaluation metrics.
+- `mean_absolute_error` – Calculates MAE.
+- `mean_squared_error` – Calculates MSE.
+- `r2_score` – Calculates the R² score.
+
+## **Step 2: Create Uber fare dataset**
+
+```
+data = {    'distance': [2, 3, 5, 7, 4, 8, 10, 6, 12, 9,                 3, 11, 5, 14, 7, 15, 4, 13, 8, 16],    'passengers': [1, 2, 1, 2, 3, 1, 2, 1, 3, 2,                   1, 2, 2, 1, 3, 2, 1, 3, 2, 1],    'fare': [50, 65, 95, 125, 85, 140, 170, 110, 200, 155,             60, 185, 100, 230, 130, 245, 75, 220, 145, 260]}df = pd.DataFrame(data)
+```
+
+**Line 1:**
+
+- `data` – Variable that stores the Uber fare dataset.
+- `{}` – Creates a Python dictionary.
+- The dictionary contains three columns: distance, passengers and fare.
+
+**Line 2:**
+
+- `'distance'` – Represents the travel distance in the dataset.
+- The values represent the distance of different Uber trips.
+
+**Line 3:**
+
+- `'passengers'` – Represents the number of passengers travelling in each Uber trip.
+- Values indicate the passenger count for each trip.
+
+**Line 4:**
+
+- `'fare'` – Represents the Uber fare for each trip.
+- Values indicate the corresponding fare.
+
+**Line 5:**
+
+- `df` – Variable that stores the dataset as a DataFrame.
+- `pd.DataFrame(data)` – Converts the dictionary into a tabular dataset using Pandas.
+
+## **Step 3: Separate input and output**
+
+```
+X = df[['distance', 'passengers']]y = df['fare']
+```
+
+**Line 1:**
+
+- `X` – Variable that stores the input features.
+- `df[['distance', 'passengers']]` – Selects the distance and passengers columns from the DataFrame.
+- These two features are used to predict the Uber fare.
+
+**Line 2:**
+
+- `y` – Variable that stores the target or output variable.
+- `df['fare']` – Selects the fare column from the dataset.
+- This is the value that the model needs to predict.
+
+**Important:** `X` represents input features, and `y` represents the target variable.
+
+## **Step 4: Split dataset into training and testing**
+
+```
+X_train, X_test, y_train, y_test = train_test_split(    X, y, test_size=0.2, random_state=42)
+```
+
+**Line-by-line explanation:**
+
+- `train_test_split()` – Divides the dataset into training and testing portions.
+- `X` – Input features given to the function.
+- `y` – Target output given to the function.
+- `X_train` – Stores input features used for training.
+- `X_test` – Stores input features used for testing.
+- `y_train` – Stores actual output values used for training.
+- `y_test` – Stores actual output values used for testing.
+- `test_size=0.2` – Allocates 20% of the dataset for testing and 80% for training.
+- `random_state=42` – Ensures the same random split is produced whenever the code is executed.
+
+**For this dataset:**
+
+- Total records = 20
+- Training records = 16
+- Testing records = 4
+
+## **Step 5: Create regression models**
+
+```
+models = {    'Linear Regression': LinearRegression(),    'Ridge Regression': make_pipeline(        StandardScaler(), Ridge(alpha=1.0)    ),    'Lasso Regression': make_pipeline(        StandardScaler(), Lasso(alpha=0.1)    )}
+```
+
+**Line 1:**
+
+- `models` – Dictionary that stores the three regression models.
+- `{}` – Creates a dictionary to store model names and their objects.
+
+**Line 2:**
+
+- `'Linear Regression'` – Name of the first regression model.
+- `LinearRegression()` – Creates a Linear Regression model.
+- It learns the relationship between input features and Uber fare.
+
+**Line 3:**
+
+- `'Ridge Regression'` – Name of the second regression model.
+- `make_pipeline()` – Combines standardization and Ridge regression into one pipeline.
+
+**Line 4:**
+
+- `StandardScaler()` – Standardizes the input features before applying Ridge regression.
+- `Ridge(alpha=1.0)` – Creates a Ridge Regression model.
+- `alpha=1.0` – Controls the strength of L2 regularization.
+
+**Line 5:**
+
+- `'Lasso Regression'` – Name of the third regression model.
+- `make_pipeline()` – Combines standardization and Lasso regression.
+
+**Line 6:**
+
+- `StandardScaler()` – Standardizes the input features.
+- `Lasso(alpha=0.1)` – Creates a Lasso Regression model.
+- `alpha=0.1` – Controls the strength of L1 regularization.
+
+**Important difference:**
+
+- Linear Regression – Basic regression without regularization.
+- Ridge Regression – Uses L2 regularization to reduce large coefficients.
+- Lasso Regression – Uses L1 regularization and can make some coefficients zero.
+
+## **Step 6: Train and evaluate models**
+
+```
+for name, model in models.items():    model.fit(X_train, y_train)    y_pred = model.predict(X_test)    print("\n", name)    print("MAE:", mean_absolute_error(y_test, y_pred))    print("MSE:", mean_squared_error(y_test, y_pred))    print("R2 Score:", r2_score(y_test, y_pred))
+```
+
+**Line 1:**
+
+- `for` – Starts a loop.
+- `name` – Stores the name of the current regression model.
+- `model` – Stores the current regression model object.
+- `models.items()` – Returns the model names and their corresponding objects.
+- The loop runs three times because there are three regression models.
+
+**Line 2:**
+
+- `model.fit()` – Trains the regression model.
+- `X_train` – Training input features.
+- `y_train` – Actual training output values.
+- The model learns the relationship between distance, passengers and fare.
+
+**Line 3:**
+
+- `y_pred` – Variable that stores predicted fare values.
+- `model.predict()` – Predicts the output using the trained model.
+- `X_test` – Testing input features given to the model.
+
+**Line 4:**
+
+- `print()` – Displays the output.
+- `\n` – Adds a new line.
+- `name` – Displays the current model name.
+
+**Line 5:**
+
+- `"MAE:"` – Displays the Mean Absolute Error heading.
+- `mean_absolute_error()` – Calculates the average absolute difference between actual and predicted values.
+- `y_test` – Actual fare values.
+- `y_pred` – Predicted fare values.
+
+**Line 6:**
+
+- `"MSE:"` – Displays the Mean Squared Error heading.
+- `mean_squared_error()` – Calculates the average squared difference between actual and predicted values.
+- A lower MSE indicates smaller prediction errors.
+
+**Line 7:**
+
+- `"R2 Score:"` – Displays the R-squared score.
+- `r2_score()` – Measures how well the model explains variations in the target variable.
+- A score closer to 1 generally indicates a better fit.
+
+**Important evaluation metrics:**
+
+| Metric | Meaning                | Better result |
+| ------ | ---------------------- | ------------- |
+| MAE    | Average absolute error | Lower         |
+| MSE    | Average squared error  | Lower         |
+| R²     | Model performance      | Closer to 1   |
+
+**Note:** Exact metric values depend on the training/testing split and model execution.
+
+## **Step 7: Predict fare using Linear Regression**
+
+```
+linear_model = models['Linear Regression']distance = pd.DataFrame({    'distance': [10],    'passengers': [2]})predicted_fare = linear_model.predict(distance)print("\nPredicted Uber Fare:", predicted_fare[0])
+```
+
+**Line 1:**
+
+- `linear_model` – Variable that stores the Linear Regression model.
+- `models['Linear Regression']` – Retrieves the Linear Regression model from the dictionary.
+
+**Line 2:**
+
+- `distance` – Variable that stores the new input data.
+- `pd.DataFrame()` – Creates a DataFrame for the new prediction.
+
+**Line 3:**
+
+- `'distance': [10]` – Sets the trip distance to 10.
+- `'passengers': [2]` – Sets the passenger count to 2.
+
+**Line 4:**
+
+- `predicted_fare` – Variable that stores the predicted fare.
+- `linear_model.predict()` – Uses the trained Linear Regression model to predict the fare.
+- `distance` – New input data given to the model.
+
+**Line 5:**
+
+- `print()` – Displays the prediction.
+- `\n` – Adds a new line.
+- `"Predicted Uber Fare:"` – Displays the output heading.
+- `predicted_fare[0]` – Retrieves the first predicted fare value from the prediction array.
+
+**Expected output:** A numerical predicted Uber fare for a trip of distance 10 with 2 passengers. The exact value is calculated by the trained model.
+
+## **Step 8: Visualize actual vs predicted fare**
+
+```
+plt.figure(figsize=(7, 5))plt.scatter(y_test, linear_model.predict(X_test))plt.xlabel("Actual Fare")plt.ylabel("Predicted Fare")plt.title("Uber Fare Prediction - Linear Regression")plt.show()
+```
+
+**Line 1:**
+
+- `plt.figure()` – Creates a new figure for the graph.
+- `figsize=(7, 5)` – Sets the graph width to 7 inches and height to 5 inches.
+
+**Line 2:**
+
+- `plt.scatter()` – Creates a scatter plot.
+- `y_test` – Actual Uber fare values plotted on the X-axis.
+- `linear_model.predict(X_test)` – Predicted Uber fare values plotted on the Y-axis.
+
+**Line 3:**
+
+- `plt.xlabel()` – Sets the X-axis label.
+- `"Actual Fare"` – Represents the actual Uber fare.
+
+**Line 4:**
+
+- `plt.ylabel()` – Sets the Y-axis label.
+- `"Predicted Fare"` – Represents the predicted Uber fare.
+
+**Line 5:**
+
+- `plt.title()` – Sets the title of the graph.
+- `"Uber Fare Prediction - Linear Regression"` – Displays the graph title.
+
+**Line 6:**
+
+\- `plt.show()` – Displays the final scatter plot.
+
+**Output explanation:**
+
+[Predicting Taxi Fare in New York City | by Diego O’Hurtado | Medium](https://images.openai.com/static-rsc-4/V46swZEvY-rASSMc9noEr-URGg7c0APeNrPKsniV-Vp4euEjbkXeTlhPIOh8j-k0KbGaO2rwctrBk9kTD7bbPEjhSGP8mILNrPmhaCd3xIqqW1sUa74jV7hxf9PX5TYDAjhoUEEw983aSLSfN2QYIfSUbKl6n6FMkp6YY-qoBm4?purpose=inline)
+
+[diegohurtadoo.medium.com](https://diegohurtadoo.medium.com/predicting-taxi-fare-in-new-york-city-c5dd4aef55f4?utm_source=chatgpt.com)
+
+- Each dot represents one testing data sample.
+- X-axis shows the actual fare.
+- Y-axis shows the predicted fare.
+- If the points are close to the imaginary diagonal line \\(y=x\\), predictions are more accurate.
+- Points far from that line indicate larger prediction errors.
+

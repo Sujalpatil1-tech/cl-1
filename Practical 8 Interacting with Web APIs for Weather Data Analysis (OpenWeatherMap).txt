@@ -1,0 +1,437 @@
+NEED PAI KEY
+
+Practical 8 Interacting with Web APIs for Weather Data Analysis (OpenWeatherMap)
+
+CODE:
+
+
+
+
+
+# Step 1: Import required libraries
+import requests
+import pandas as pd
+
+# Step 2: Enter API key and city name
+API_KEY = "YOUR_API_KEY"
+CITY = "Nashik"
+
+# Step 3: Define API URL
+url = "https://api.openweathermap.org/data/2.5/weather"
+
+# Step 4: Define request parameters
+params = {
+    "q": CITY,
+    "appid": API_KEY,
+    "units": "metric"
+}
+
+# Step 5: Send GET request
+response = requests.get(url, params=params)
+
+# Step 6: Check API response
+if response.status_code == 200:
+
+    # Convert JSON response into Python dictionary
+    data = response.json()
+
+    # Step 7: Extract weather information
+    weather_data = {
+        "City": data["name"],
+        "Temperature": data["main"]["temp"],
+        "Humidity": data["main"]["humidity"],
+        "Pressure": data["main"]["pressure"],
+        "Weather": data["weather"][0]["description"],
+        "Wind Speed": data["wind"]["speed"]
+    }
+
+    # Step 8: Create DataFrame
+    df = pd.DataFrame([weather_data])
+
+    # Step 9: Display weather information
+    print("Current Weather Information:")
+    print(df)
+
+else:
+    print("Error:", response.status_code)
+    print(response.json())
+
+
+
+
+
+
+
+
+
+
+
+## **1. Aim**
+
+To interact with a web API using Python to retrieve weather data from OpenWeatherMap and perform weather data analysis.
+
+## **2. Theory**
+
+**API (Application Programming Interface)** is a software interface that allows two different applications to communicate and exchange data with each other.
+
+In Data Science, APIs are commonly used to collect real-time data from external sources such as weather services, financial platforms, social media and websites.
+
+**OpenWeatherMap** is an online weather service that provides weather information through APIs. It allows developers to retrieve weather-related information such as temperature, humidity, atmospheric pressure, wind speed and weather conditions.
+
+In this practical, Python is used to connect with the OpenWeatherMap API, retrieve weather information and analyze the collected data.
+
+### **What is a Web API?**
+
+A Web API allows applications to communicate over the internet using HTTP requests and responses.
+
+[Čo je REST API a ako funguje? Sprievodca pre začiatočníkov | Skillmea](https://images.openai.com/static-rsc-4/3lXYpnAUtN1VF_Gnm845RsBz84cpMH9zTvHXGsm7Ib51nUrtkgf9xNJWrystcYgSM6uyOSpq5wqyG5oIxrwRIbprorzDIPVK8k9eV8K5ejmGtGlS8tkvpcXqN-j085CPTZhsHTLk6LXd_FR1rRWCB7YfNiV2_atOBAUT9X8g4J4?purpose=inline)
+
+[skillmea.sk](https://skillmea.sk/blog/co-je-rest-api?utm_source=chatgpt.com)
+
+**Example:**
+
+Suppose a weather application wants to display the current temperature of Nashik.
+
+1. The application sends a request to the OpenWeatherMap API.
+2. The API processes the request.
+3. The server retrieves the weather information.
+4. The API returns the result in JSON format.
+5. Python processes the JSON response and displays the weather information.
+
+### **What is OpenWeatherMap API?**
+
+OpenWeatherMap provides weather information for different cities and geographical locations.
+
+It can provide:
+
+1. Temperature
+2. Humidity
+3. Atmospheric pressure
+4. Wind speed
+5. Weather conditions
+6. Cloud information
+7. Sunrise and sunset times
+
+### **What is JSON Response?**
+
+JSON (JavaScript Object Notation) is a lightweight data format used to exchange information between applications.
+
+Example of a weather API response:
+
+```
+{
+  "name": "Nashik",
+  "main": {
+    "temp": 30,
+    "humidity": 65,
+    "pressure": 1012
+  },
+  "weather": [
+    {
+      "description": "clear sky"
+    }
+  ],
+  "wind": {
+    "speed": 3.5
+  }
+}
+```
+
+Python can extract individual values from this JSON response.
+
+### **HTTP Methods**
+
+HTTP methods define the type of operation performed when communicating with a web API.
+
+- **GET:** Retrieves data from a server.
+- **POST:** Sends data to a server.
+- **PUT:** Updates existing data.
+- **DELETE:** Deletes data.
+
+In this practical, the GET method is commonly used to retrieve weather information.
+
+### **API Key**
+
+An API key is a unique authentication code used to identify and authorize an application when accessing an API.
+
+OpenWeatherMap requires an API key for accessing its weather services.
+
+## **3. Working / Steps**
+
+1. **Import Libraries:** Import the required Python libraries such as Requests, Pandas and JSON.
+2. **Create Account:** Register on the OpenWeatherMap platform.
+3. **Generate API Key:** Obtain an API key for accessing weather information.
+4. **Define City:** Specify the city name for which weather information is required.
+5. **Construct API URL:** Create the API request URL using the city name and API key.
+6. **Send Request:** Use the `requests.get()` function to send an HTTP GET request.
+7. **Check Response:** Check the HTTP status code to verify whether the request was successful.
+8. **Receive JSON Data:** Retrieve the response using the `.json()` method.
+9. **Extract Information:** Extract temperature, humidity, pressure, wind speed and weather conditions.
+10. **Create DataFrame:** Store the extracted information in a Pandas DataFrame.
+11. **Analyze Data:** Perform basic analysis on the collected weather information.
+12. **Display Results:** Display the weather information using tables or visualizations.
+
+## **4. Important Concepts**
+
+| Concept          | Meaning                                               |
+| ---------------- | ----------------------------------------------------- |
+| API              | Interface that allows applications to communicate     |
+| Web API          | API accessed through the internet                     |
+| OpenWeatherMap   | Online weather data service                           |
+| API Key          | Unique authentication code                            |
+| HTTP             | Protocol used for communication over the web          |
+| GET Request      | Request used to retrieve data                         |
+| JSON             | Format used to exchange structured data               |
+| Response         | Data returned by the API server                       |
+| Status Code      | Indicates the result of an HTTP request               |
+| Requests Library | Python library used to send HTTP requests             |
+| DataFrame        | Tabular structure used to store data                  |
+| Real-Time Data   | Data that reflects current or near-current conditions |
+
+### **Important HTTP Status Codes**
+
+| Status Code | Meaning                                   |
+| ----------- | ----------------------------------------- |
+| 200         | OK – Request successful                   |
+| 400         | Bad Request                               |
+| 401         | Unauthorized – Invalid or missing API key |
+| 403         | Forbidden – Access not permitted          |
+| 404         | Not Found                                 |
+| 500         | Internal Server Error                     |
+
+### **Important Python Functions**
+
+| Function               | Purpose                                 |
+| ---------------------- | --------------------------------------- |
+| `requests.get()`       | Sends GET request                       |
+| `response.status_code` | Checks HTTP status code                 |
+| `response.json()`      | Converts JSON response into Python data |
+| `pd.DataFrame()`       | Creates a DataFrame                     |
+| `print()`              | Displays output                         |
+
+## **5. Advantages**
+
+1. Provides access to weather information from external sources.
+2. Collects current weather data without manual entry.
+3. Supports data exchange between different applications.
+4. Saves time in data collection.
+5. JSON makes weather information easy to process.
+6. Can be integrated into websites and mobile applications.
+7. Supports weather monitoring and analysis.
+
+## **6. Applications**
+
+1. Weather forecasting applications.
+2. Agriculture and crop monitoring.
+3. Travel planning applications.
+4. Disaster management systems.
+5. Smart city applications.
+6. Transportation and logistics.
+7. Weather dashboards and reports.
+
+## **7. Libraries Used**
+
+| Library    | Purpose                        |
+| ---------- | ------------------------------ |
+| Requests   | Sending HTTP requests to APIs  |
+| Pandas     | Data manipulation and analysis |
+| NumPy      | Numerical calculations         |
+| JSON       | Processing JSON data           |
+| Matplotlib | Weather data visualization     |
+| Seaborn    | Statistical data visualization |
+
+## **8. Conclusion**
+
+In this practical, weather data was retrieved from the OpenWeatherMap API using Python. An HTTP GET request was sent to the API server, and the response was received in JSON format. Important weather information such as temperature, humidity, atmospheric pressure and wind speed was extracted and analyzed using Pandas. This practical demonstrated how Web APIs are used for collecting external and real-time data in Data Science.
+
+## **9. Viva Questions with Answers**
+
+**Q1. What is an API?**
+
+API stands for Application Programming Interface. It allows two different applications to communicate and exchange data.
+
+**Q2. What is a Web API?**
+
+A Web API is an interface that allows applications to communicate over the internet.
+
+**Q3. What is OpenWeatherMap?**
+
+OpenWeatherMap is an online weather service that provides weather information through APIs.
+
+**Q4. What is an API Key?**
+
+An API key is a unique authentication code used to identify and authorize an application.
+
+**Q5. What is HTTP?**
+
+HTTP stands for Hypertext Transfer Protocol. It is used for communication between clients and web servers.
+
+**Q6. What is a GET request?**
+
+A GET request is an HTTP method used to retrieve data from a server.
+
+**Q7. What is JSON?**
+
+JSON stands for JavaScript Object Notation. It is a lightweight format used for exchanging structured data.
+
+**Q8. Which Python library is used to send API requests?**
+
+The Requests library is commonly used to send HTTP requests.
+
+**Q9. What does&#x20;**`requests.get()`**&#x20;do?**
+
+It sends an HTTP GET request to a specified URL and receives the server response.
+
+**Q10. What is the purpose of&#x20;**`response.json()`**?**
+
+It converts the JSON response into Python data structures, usually a dictionary or list.
+
+**Q11. What is HTTP status code 200?**
+
+It indicates that the request was successful.
+
+**Q12. What does HTTP status code 404 mean?**
+
+It means the requested resource was not found.
+
+**Q13. What is the purpose of Pandas in this practical?**
+
+Pandas is used to organize, manipulate and analyze the collected weather data.
+
+**Q14. Which weather information can be retrieved using OpenWeatherMap?**
+
+Temperature, humidity, pressure, wind speed, weather conditions and cloud information.
+
+**Q15. What are the applications of Web APIs?**
+
+Weather applications, financial services, social media applications, travel applications and data analytics systems.
+
+
+
+
+
+
+
+# **Practical 8: Weather Data Analysis using OpenWeatherMap API and Pandas**
+
+## **Step 1: Import required libraries**
+
+```
+import requestsimport pandas as pd
+```
+
+- `requests`: Python library used to send HTTP requests and access data from APIs.
+- `pandas`: Used to organize and display the retrieved data in tabular format.
+- `pd`: Alias for Pandas.
+
+## **Step 2: Enter API key and city name**
+
+```
+API_KEY = "YOUR_API_KEY"CITY = "Nashik"
+```
+
+- `API_KEY` stores the API key obtained from OpenWeatherMap.
+- `"YOUR_API_KEY"` is a placeholder. Replace it with your actual API key.
+- `CITY` stores the name of the city for which weather information is required.
+- Here, the city is Nashik.
+
+## **Step 3: Define API URL**
+
+```
+url = "https://api.openweathermap.org/data/2.5/weather"
+```
+
+- `url` stores the API endpoint.
+- An API endpoint is a URL through which an application requests data from a server.
+- This endpoint provides current weather information.
+
+## **Step 4: Define request parameters**
+
+```
+params = {    "q": CITY,    "appid": API_KEY,    "units": "metric"}
+```
+
+- `params` is a dictionary containing the parameters required by the API.
+- `"q": CITY` specifies the city name.
+- `"appid": API_KEY` provides the API authentication key.
+- `"units": "metric"` requests temperature in Celsius and wind speed in metres per second.
+
+## **Step 5: Send GET request**
+
+```
+response = requests.get(url, params=params)
+```
+
+- `requests.get()` sends an HTTP GET request to the API.
+- `url` specifies the API endpoint.
+- `params=params` sends the city name, API key and measurement units.
+- `response` stores the server's response.
+
+## **Step 6: Check API response**
+
+```
+if response.status_code == 200:
+```
+
+- `status_code` represents the HTTP response status.
+- `200` means the request was successful.
+- `if` checks whether the API returned a successful response.
+
+**Convert JSON response into Python dictionary**
+
+```
+data = response.json()
+```
+
+- `response.json()` converts the JSON response received from the API into a Python dictionary.
+- `data` stores the complete weather information.
+
+## **Step 7: Extract weather information**
+
+```
+weather_data = {    "City": data["name"],    "Temperature": data["main"]["temp"],    "Humidity": data["main"]["humidity"],    "Pressure": data["main"]["pressure"],    "Weather": data["weather"][0]["description"],    "Wind Speed": data["wind"]["speed"]}
+```
+
+This dictionary extracts the required weather information from the API response.
+
+- `"City": data["name"]` extracts the city name.
+- `"Temperature": data["main"]["temp"]` extracts the current temperature in Celsius.
+- `"Humidity": data["main"]["humidity"]` extracts humidity in percentage.
+- `"Pressure": data["main"]["pressure"]` extracts atmospheric pressure in hPa.
+- `"Weather": data["weather"][0]["description"]` extracts the weather description, such as clear sky or light rain.
+- `"Wind Speed": data["wind"]["speed"]` extracts wind speed in metres per second.
+
+**Important:** `data["main"]`, `data["weather"]` and `data["wind"]` are nested dictionaries/lists in the API response.
+
+## **Step 8: Create DataFrame**
+
+```
+df = pd.DataFrame([weather_data])
+```
+
+- `pd.DataFrame()` converts the weather dictionary into a Pandas DataFrame.
+- `[weather_data]` places the dictionary inside a list to create one row.
+- `df` stores the resulting table.
+
+## **Step 9: Display weather information**
+
+```
+print("Current Weather Information:")print(df)
+```
+
+- The first `print()` displays the heading.
+- The second `print()` displays the weather information in tabular format.
+
+**If API request fails:**
+
+```
+else:    print("Error:", response.status_code)    print(response.json())
+```
+
+- `else` executes when the response status code is not 200.
+- `response.status_code` displays the error status code.
+- `response.json()` displays the error details returned by the API.
+
+**Example:** Status code `401` generally indicates an invalid or missing API key.
+
+**Practical note:** Before running the program, replace `YOUR_API_KEY` with a valid OpenWeatherMap API key. You also need the `requests` and `pandas` libraries installed.

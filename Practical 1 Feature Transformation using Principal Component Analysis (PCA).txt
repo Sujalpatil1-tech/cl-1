@@ -1,0 +1,470 @@
+Practical 1 Feature Transformation using Principal Component Analysis (PCA)
+
+CODE:
+
+
+
+
+# Step 1: Import libraries
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+
+# Step 2: Load Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Step 3: Standardize the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Step 4: Apply PCA
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+
+# Step 5: Display dataset dimensions
+print("Original Shape:", X.shape)
+print("Reduced Shape:", X_pca.shape)
+
+# Step 6: Display explained variance
+print("\nExplained Variance Ratio:")
+print(pca.explained_variance_ratio_)
+
+print("\nTotal Variance Preserved:")
+print(np.sum(pca.explained_variance_ratio_))
+
+# Step 7: Visualize PCA results
+plt.figure(figsize=(8, 5))
+
+plt.scatter(X_pca[:, 0], X_pca[:, 1],
+            c=y, cmap='viridis')
+
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+plt.title("PCA - Dimensionality Reduction")
+plt.colorbar(label="Flower Class")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Aim
+To perform feature transformation and dimensionality reduction using Principal Component Analysis (PCA) on a given dataset.
+
+
+2. Theory
+Principal Component Analysis (PCA) is an unsupervised statistical technique used for dimensionality reduction. It transforms a dataset containing a large number of correlated features into a smaller set of new features called principal components while retaining maximum possible information (variance) from the original dataset.
+
+In machine learning, datasets often contain many features, and some features may contain similar or redundant information. This increases computational complexity and makes data analysis difficult. PCA solves this problem by identifying the most important patterns and reducing the number of dimensions.
+
+PCA creates new variables (principal components) that are linear combinations of the original features. These components are arranged in descending order of the amount of variance they explain. The first principal component captures the maximum variance, followed by the second principal component, and so on.
+
+
+3. Working of PCA
+
+PCA works through the following steps:
+
+1. Data Collection: Load the dataset containing multiple numerical features using Pandas.
+
+2. Data Standardization: Standardize the features using StandardScaler so that all features have a common scale. This prevents features with larger values from dominating the analysis.
+
+3. Covariance Matrix Calculation: Calculate the covariance matrix to understand the relationships and variations between different features.
+
+4. Eigenvalue and Eigenvector Calculation: Calculate eigenvalues and eigenvectors from the covariance matrix. Eigenvalues represent the amount of variance, while eigenvectors represent the directions of the principal components.
+
+5. Principal Component Selection: Select the principal components with the highest eigenvalues because they contain the maximum information from the original dataset.
+
+6. Feature Transformation: Transform the original dataset into a reduced-dimensional dataset using the selected principal components.
+
+7. Visualization: Visualize the transformed data using graphs to understand the reduced dimensions.
+
+
+
+4. Important Concepts of PCA
+1. Dimensionality Reduction: It is the process of reducing the number of input features while preserving important information.
+
+2. Principal Components: These are new independent variables created by combining the original features. They represent the directions of maximum variance in the dataset.
+
+3. Eigenvalues: Eigenvalues indicate how much variance or information is captured by each principal component.
+
+4. Eigenvectors: Eigenvectors determine the direction of the principal components in the feature space.
+
+5. Explained Variance: It represents the proportion of total information retained by each principal component.
+
+6. Standardization: It converts features into a common scale so that each feature contributes appropriately to PCA.
+
+5. Advantages of PCA
+1. Reduces the number of features in a dataset.
+2. Removes redundant and highly correlated information.
+3. Improves computational efficiency.
+4. Helps visualize high-dimensional datasets in 2D or 3D.
+5. Reduces the effect of multicollinearity.
+6. Can help reduce noise and simplify data analysis.
+
+6. Applications of PCA
+1. Image Processing: Used for image compression and reducing image dimensions.
+2. Face Recognition: Helps identify important facial features.
+3. Medical Data Analysis: Reduces complex medical data into fewer important variables.
+4. Data Visualization: Converts high-dimensional data into 2D or 3D representations.
+5. Machine Learning: Used as a preprocessing technique before training machine learning models.
+
+7. Libraries Used
+- NumPy: Used for numerical calculations.
+- Pandas: Used for loading and handling datasets.
+- Scikit-learn: Used for standardization and PCA implementation.
+- Matplotlib: Used for plotting graphs and visualizing results.
+
+8. Conclusion
+Thus, Principal Component Analysis (PCA) was successfully studied and implemented for feature transformation and dimensionality reduction. It converts multiple original features into a smaller number of principal components while retaining maximum possible information. PCA helps simplify datasets, reduce computational complexity and improve data visualization.
+
+
+
+code explaination:
+
+
+## **Step 1: Import required libraries**
+
+```
+import numpy as npimport matplotlib.pyplot as pltfrom sklearn.datasets import load_irisfrom sklearn.preprocessing import StandardScalerfrom sklearn.decomposition import PCA
+```
+
+**Line 1:**
+
+- `import numpy as np` – Imports the NumPy library.
+- `numpy` – Used for numerical and mathematical operations.
+- `np` – Short name (alias) for NumPy.
+
+**Line 2:**
+
+- `import matplotlib.pyplot as plt` – Imports the Pyplot module from Matplotlib.
+- `matplotlib.pyplot` – Used to create graphs and visualizations.
+- `plt` – Short name (alias) for Pyplot.
+
+**Line 3:**
+
+- `from sklearn.datasets import load_iris` – Imports the Iris dataset from Scikit-learn.
+- `load_iris` – Used to load flower measurement data.
+
+**Line 4:**
+
+- `from sklearn.preprocessing import StandardScaler` – Imports StandardScaler.
+- `StandardScaler` – Used to standardize the dataset so that all features have a similar scale.
+
+**Line 5:**
+
+- `from sklearn.decomposition import PCA` – Imports the PCA algorithm.
+- `PCA` – Used to reduce the number of features while preserving maximum possible information.
+
+## **Step 2: Load Iris dataset**
+
+```
+iris = load_iris()X = iris.datay = iris.target
+```
+
+**Line 1:**
+
+- `iris` – Variable that stores the Iris dataset.
+- `load_iris()` – Loads the Iris dataset from Scikit-learn.
+- The dataset contains 150 flower samples and 4 features.
+
+**Line 2:**
+
+- `X` – Variable that stores the input features.
+- `iris.data` – Extracts the flower measurement data.
+- It contains four features:
+  1. Sepal length
+  2. Sepal width
+  3. Petal length
+  4. Petal width
+
+**Line 3:**
+
+- `y` – Variable that stores the target labels.
+- `iris.target` – Extracts the flower class labels.
+- There are three classes represented by 0, 1 and 2.
+
+## **Step 3: Standardize the data**
+
+```
+scaler = StandardScaler()X_scaled = scaler.fit_transform(X)
+```
+
+**Line 1:**
+
+- `scaler` – Variable that stores the StandardScaler object.
+- `StandardScaler()` – Creates a StandardScaler object.
+- It is used to standardize the input features.
+
+**Line 2:**
+
+- `X_scaled` – Variable that stores the standardized dataset.
+- `scaler.fit_transform()` – Calculates the mean and standard deviation and transforms the data.
+- `X` – Original dataset given as input.
+
+Standardization converts the features into a common scale with approximately zero mean and unit standard deviation.
+
+Formula:
+
+\\[ Z = \frac{X-\mu}{\sigma} \\]
+
+Where:
+
+- X = Original value
+- μ = Mean
+- σ = Standard deviation
+- Z = Standardized value
+
+## **Step 4: Apply PCA**
+
+```
+pca = PCA(n_components=2)X_pca = pca.fit_transform(X_scaled)
+```
+
+**Line 1:**
+
+- `pca` – Variable that stores the PCA object.
+- `PCA()` – Creates a PCA object.
+- `n_components=2` – Specifies that we want to reduce the dataset to two principal components.
+
+**Line 2:**
+
+- `X_pca` – Variable that stores the reduced dataset.
+- `pca.fit_transform()` – Finds the principal components and transforms the standardized data.
+- `X_scaled` – Standardized dataset given as input.
+
+PCA converts the original four features into two new features called Principal Component 1 and Principal Component 2.
+
+## **Step 5: Display dataset dimensions**
+
+```
+print("Original Shape:", X.shape)print("Reduced Shape:", X_pca.shape)
+```
+
+**Line 1:**
+
+- `print()` – Displays the output on the screen.
+- `"Original Shape:"` – Displays the heading.
+- `X.shape` – Returns the dimensions of the original dataset.
+- It displays 150 rows and 4 columns.
+
+**Line 2:**
+
+- `"Reduced Shape:"` – Displays the heading.
+- `X_pca.shape` – Returns the dimensions of the reduced dataset.
+- It displays 150 rows and 2 columns.
+
+**Output:**
+
+```
+Original Shape: (150, 4)
+Reduced Shape: (150, 2)
+```
+
+**Output explanation:**
+
+- Original Shape (150, 4) means 150 flower samples and 4 original features.
+- Reduced Shape (150, 2) means 150 flower samples and 2 principal components.
+
+Therefore, PCA successfully reduces the number of features from 4 to 2.
+
+## **Step 6: Display explained variance**
+
+```
+print("\nExplained Variance Ratio:")print(pca.explained_variance_ratio_)print("\nTotal Variance Preserved:")print(np.sum(pca.explained_variance_ratio_))
+```
+
+**Line 1:**
+
+- `print()` – Displays the output.
+- `\n` – Adds a new line.
+- `"Explained Variance Ratio:"` – Displays the heading.
+
+**Line 2:**
+
+- `pca` – Refers to the PCA object.
+- `explained_variance_ratio_` – Returns the proportion of variance explained by each principal component.
+- It tells us how much information each principal component preserves.
+
+**Line 3:**
+
+- `print()` – Displays the output.
+- `\n` – Adds a new line.
+- `"Total Variance Preserved:"` – Displays the heading.
+
+**Line 4:**
+
+- `np.sum()` – Calculates the sum of numerical values.
+- `pca.explained_variance_ratio_` – Contains the explained variance ratios of both principal components.
+- It calculates the total variance preserved by the two components.
+
+**Expected output (approximately):**
+
+```
+Explained Variance Ratio:
+[0.7296 0.2285]
+
+Total Variance Preserved:
+0.9581
+```
+
+**Output explanation:**
+
+- First principal component preserves approximately 72.96% of the variance.
+- Second principal component preserves approximately 22.85% of the variance.
+- Total variance preserved is approximately 95.81%.
+
+This means the two principal components together preserve approximately 95.81% of the original dataset's variance.
+
+## **Step 7: Visualize PCA results**
+
+```
+plt.figure(figsize=(8, 5))plt.scatter(X_pca[:, 0], X_pca[:, 1],            c=y, cmap='viridis')plt.xlabel("Principal Component 1")plt.ylabel("Principal Component 2")plt.title("PCA - Dimensionality Reduction")plt.colorbar(label="Flower Class")plt.show()
+```
+
+**Line 1:**
+
+- `plt.figure()` – Creates a new figure for the graph.
+- `figsize=(8, 5)` – Sets the graph width to 8 inches and height to 5 inches.
+
+**Line 2:**
+
+- `plt.scatter()` – Creates a scatter plot.
+- `X_pca[:, 0]` – Selects all rows of the first principal component for the X-axis.
+- `X_pca[:, 1]` – Selects all rows of the second principal component for the Y-axis.
+
+**Line 3:**
+
+- `c=y` – Assigns different colors according to the flower class labels.
+- `cmap='viridis'` – Specifies the Viridis color scheme for the scatter plot.
+
+**Line 4:**
+
+- `plt.xlabel()` – Sets the X-axis label.
+- `"Principal Component 1"` – Displays the first principal component name.
+
+**Line 5:**
+
+- `plt.ylabel()` – Sets the Y-axis label.
+- `"Principal Component 2"` – Displays the second principal component name.
+
+**Line 6:**
+
+- `plt.title()` – Sets the title of the graph.
+- `"PCA - Dimensionality Reduction"` – Displays the graph title.
+
+**Line 7:**
+
+- `plt.colorbar()` – Displays a color bar beside the graph.
+- `label="Flower Class"` – Sets the color bar label.
+- It helps identify the different flower classes.
+
+**Line 8:**
+
+\- `plt.show()` – Displays the final scatter plot on the screen.
+
+## **Output explanation**
+
+[Comparison of LDA and PCA 2D projection of Iris dataset — scikit-learn 0.23.2 documentation](https://images.openai.com/static-rsc-4/OGv9HJky8cuLMu-LS59NvgqeRUnCsQ2jcdNkjhG1P8bXxAnjx7qPSplQ5Cnjq7Q_4KtKf_YL0oRML5aWBm8kwI7HbLjJqzdAkwHTgObZkLKxob2JmDlfSaJ0Q5NijcrcmyUfk4e1ddxT4MEv5IDcqZ7LLMLPF-v1ZXjtiM82uJQ?purpose=inline)
+
+[scikit-learn.org](https://scikit-learn.org/0.23/auto_examples/decomposition/plot_pca_vs_lda.html?utm_source=chatgpt.com)
+
+The graph represents the Iris dataset after applying PCA.
+
+- Each dot represents one flower sample.
+- X-axis represents Principal Component 1.
+- Y-axis represents Principal Component 2.
+- Different colors represent different flower classes.
+- Similar flower samples tend to form clusters.
+- The graph helps us visualize four-dimensional data in two dimensions.
+
+## **Final output summary**
+
+| Operation                      | Result               |
+| ------------------------------ | -------------------- |
+| Original dataset               | 150 × 4              |
+| Reduced dataset                | 150 × 2              |
+| Number of principal components | 2                    |
+| Total variance preserved       | Approximately 95.81% |
+| Visualization                  | Scatter plot         |
+
+**Overall conclusion:** The program applies Principal Component Analysis (PCA) to the Iris dataset. It standardizes the data, reduces four original features into two principal components, calculates the explained variance and visualizes the reduced dataset using a scatter plot.
+
+
+
+
+
+9. Viva Questions and Answers (15)
+Q1. What is PCA?
+
+PCA (Principal Component Analysis) is a dimensionality reduction technique used to reduce the number of features while retaining maximum information.
+
+Q2. What is the main purpose of PCA?
+
+The main purpose of PCA is to reduce dataset dimensions, remove redundant information and simplify data analysis.
+
+Q3. Is PCA supervised or unsupervised?
+
+PCA is an unsupervised learning technique because it does not require labelled output data.
+
+Q4. What is dimensionality reduction?
+
+Dimensionality reduction is the process of reducing the number of features in a dataset while preserving important information.
+
+Q5. What are principal components?
+
+Principal components are new variables formed by combining the original features of a dataset.
+
+Q6. What is the first principal component?
+
+The first principal component is the direction that captures the maximum variance in the dataset.
+
+Q7. What is standardization?
+
+Standardization is the process of converting numerical features into a common scale, generally with mean 0 and standard deviation 1.
+
+Q8. What is a covariance matrix?
+
+A covariance matrix represents the relationship and covariance between different features in a dataset.
+
+Q9. What are eigenvalues?
+
+Eigenvalues represent the amount of variance captured by each principal component.
+
+Q10. What are eigenvectors?
+
+Eigenvectors represent the directions of the principal components in the feature space.
+
+Q11. What is explained variance?
+
+Explained variance indicates the proportion of total dataset variance captured by a principal component.
+
+Q12. Can PCA reduce 10 features into 2 features?
+
+Yes. PCA can transform 10 original features into 2 principal components while retaining as much variance as possible.
+
+Q13. Which Python library is used to implement PCA?
+
+Scikit-learn provides the PCA class in its decomposition module.
+
+Q14. What is the difference between original features and principal components?
+
+Original features are the existing dataset columns, whereas principal components are newly transformed variables created from combinations of original features.
+
+Q15. What are the applications of PCA?
+
+PCA is used in image processing, face recognition, data visualization, medical data analysis and machine learning preprocessing.

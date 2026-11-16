@@ -5,6 +5,7 @@ CODE:
 
 
 
+
 # Step 1: Import Pandas
 import pandas as pd
 
@@ -51,6 +52,44 @@ print(json_data)
 # Step 9: Display dataset information
 print("\nDataset Information:")
 print(df.info())
+
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 1. Bar Chart - Student Marks
+plt.figure(figsize=(7, 4))
+plt.bar(df['Name'], df['Marks'])
+plt.title('Student Marks')
+plt.xlabel('Student Name')
+plt.ylabel('Marks')
+plt.show()
+
+# 2. Pie Chart - Students by City
+city_count = df['City'].value_counts()
+
+plt.figure(figsize=(6, 6))
+plt.pie(city_count, labels=city_count.index,
+        autopct='%1.1f%%')
+plt.title('Student Distribution by City')
+plt.show()
+
+# 3. Histogram - Age Distribution
+plt.figure(figsize=(7, 4))
+plt.hist(df['Age'], bins=4, edgecolor='black')
+plt.title('Age Distribution')
+plt.xlabel('Age')
+plt.ylabel('Frequency')
+plt.show()
+
+# 4. Box Plot - Marks Distribution
+plt.figure(figsize=(7, 4))
+sns.boxplot(y=df['Marks'])
+plt.title('Marks Distribution')
+plt.ylabel('Marks')
+plt.show()
+
 
 
 

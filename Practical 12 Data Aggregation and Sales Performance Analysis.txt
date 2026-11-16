@@ -4,10 +4,10 @@ CODE:
 
 
 
-
 # Step 1: Import required libraries
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Step 2: Create sample sales dataset
 data = {
@@ -78,6 +78,30 @@ print("Highest Sales Region:", best_region)
 # Step 10: Display final dataset information
 print("\nDataset Information:")
 print(df.info())
+
+# Step 11: Visualize Sales by Region (Bar Chart) and Product (Pie Chart)
+plt.figure(figsize=(10, 4))
+
+# Bar Plot for Region Sales
+plt.subplot(1, 2, 1)
+region_sales.plot(kind='bar', color='skyblue', edgecolor='black')
+plt.title('Total Sales by Region')
+plt.xlabel('Region')
+plt.ylabel('Sales')
+plt.xticks(rotation=0)
+
+# Pie Chart for Product Sales Share
+plt.subplot(1, 2, 2)
+product_sales.plot(kind='pie', autopct='%1.1f%%', startangle=90)
+plt.title('Sales Share by Product')
+plt.ylabel('')  # Hides default y-axis label
+
+plt.tight_layout()
+plt.show()
+
+
+
+
 
 
 
